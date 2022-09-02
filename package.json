@@ -1,0 +1,26 @@
+{
+  "name": "mapeo-bridge",
+  "version": "1.0.0",
+  "description": "sync and storage service for mapeo maps",
+  "scripts": {
+    "start": "node .",
+    "lint": "standard --fix"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
+    "hypercore-crypto": "^1.0.0",
+    "jsonexport": "^3.2.0",
+    "level": "^6.0.1",
+    "mkdirp": "^1.0.4",
+    "osm-p2p": "^5.1.0",
+    "pino": "^6.8.0",
+    "safe-fs-blob-store": "^1.0.6"
+  },
+  "devDependencies": {
+    "get-port": "^5.1.1",
+    "standard": "^16.0.2",
+    "tape": "^5.0.1",
+    "tmp": "^0.2.1"
+  }
+}
