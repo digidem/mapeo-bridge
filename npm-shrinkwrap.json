@@ -1,11 +1,11 @@
 {
-  "name": "mapeo-web",
+  "name": "mapeo-bridge",
   "version": "1.0.0",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
-      "name": "mapeo-web",
+      "name": "mapeo-bridge",
       "version": "1.0.0",
       "license": "ISC",
       "dependencies": {
@@ -17,9 +17,6 @@
         "osm-p2p": "^5.1.0",
         "pino": "^6.8.0",
         "safe-fs-blob-store": "^1.0.6"
-      },
-      "bin": {
-        "mapeo-web": "bin.js"
       },
       "devDependencies": {
         "get-port": "^5.1.1",

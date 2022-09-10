@@ -10,9 +10,12 @@ const pino = require('pino')
 const homedir = require('os').homedir()
 
 const discoveryKey = require('./discoveryKey')
-
+const terrastoriesCsv = require('./terrastoriesCsv')
+// TODO: remote duplication of DEFAULT_STORAGE declaration
 const DEFAULT_STORAGE =
-  process.env.STORAGE_PATH || path.join(homedir, '.mapeo-bridge')
+  process.env.MAPEO_STORAGE_PATH || path.join(homedir, '.mapeo-bridge')
+
+const TERRASTORIES_TYPE = process.env.MAPEO_TERRASTORIES_TYPE || 'terrastories'
 // If a mapeo instance hasn't been accessed for a minute, we should clear it out
 const DEFAULT_GC_DELAY = 60 * 1000
 const HOSTNAME = require('os').hostname()
@@ -21,6 +24,7 @@ const DEVICE_TYPE = 'cloud'
 
 module.exports = class MultiMapeo extends EventEmitter {
   constructor ({
+    filteredType = TERRASTORIES_TYPE,
     storageLocation = DEFAULT_STORAGE,
     gcTimeout = DEFAULT_GC_DELAY,
     id = crypto.randomBytes(8).toString('hex'),
@@ -29,6 +33,7 @@ module.exports = class MultiMapeo extends EventEmitter {
   }) {
     super()
     // TODO: Add leveldb to track
+    this.filteredType = filteredType || TERRASTORIES_TYPE
     this.storageLocation = storageLocation || DEFAULT_STORAGE
     this.gcTimeout = gcTimeout || DEFAULT_GC_DELAY
     this.id = id
@@ -51,6 +56,10 @@ module.exports = class MultiMapeo extends EventEmitter {
     if (this.instances.has(key)) return this.instances.get(key)
 
     this.logger.info({ discoveryKey: key }, 'Initializing project')
+    console.log('MAPEO_STORAGE_PATH:', DEFAULT_STORAGE)
+    console.log('MAPEO_PROJECT_KEY:', projectKey)
+    console.log('Discovery Key:', key)
+    console.log("MAPEO_TERRASTORIES_TYPE:", this.filteredType)
 
     const { storageLocation, id } = this
     const dir = path.join(storageLocation, 'instances', key)
@@ -85,6 +94,7 @@ module.exports = class MultiMapeo extends EventEmitter {
       )
       // TODO: Should we track / report sync progress somewhere?
       mapeo.sync.replicate(peer, { deviceType: DEVICE_TYPE })
+      terrastoriesCsv(mapeo, DEFAULT_STORAGE, this.filteredType)
     })
 
     return mapeo
