@@ -16,6 +16,7 @@ const DEFAULT_STORAGE =
   process.env.MAPEO_STORAGE_PATH || path.join(homedir, '.mapeo-bridge')
 
 const TERRASTORIES_TYPE = process.env.MAPEO_TERRASTORIES_TYPE || 'terrastories'
+const AUTO_SYNC = process.env.AUTO_SYNC
 // If a mapeo instance hasn't been accessed for a minute, we should clear it out
 const DEFAULT_GC_DELAY = 60 * 1000
 const HOSTNAME = require('os').hostname()
@@ -86,16 +87,18 @@ module.exports = class MultiMapeo extends EventEmitter {
       mapeo.sync.join(Buffer.from(projectKey, 'hex'))
     })
 
-    mapeo.sync.on('peer', (peer) => {
-      const { id, host, port, type } = peer
-      this.logger.info(
-        { peer: { id, host, port, type } },
-        'Replicating with peer'
-      )
-      // TODO: Should we track / report sync progress somewhere?
-      mapeo.sync.replicate(peer, { deviceType: DEVICE_TYPE })
-      terrastoriesCsv(mapeo, DEFAULT_STORAGE, this.filteredType)
-    })
+    if (AUTO_SYNC) {
+      mapeo.sync.on('peer', (peer) => {
+        const { id, host, port, type } = peer
+        this.logger.info(
+          { peer: { id, host, port, type } },
+          'Replicating with peer'
+        )
+        // TODO: Should we track / report sync progress somewhere?
+        mapeo.sync.replicate(peer, { deviceType: DEVICE_TYPE })
+        terrastoriesCsv(mapeo, DEFAULT_STORAGE, this.filteredType)
+      })
+    }
 
     return mapeo
   }
