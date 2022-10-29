@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Mapeo Bridge</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="/assets/mapbox-gl.css" rel="stylesheet">
+  <script src="/assets/mapbox-gl.js"></script>
+  <script src="/assets/axios.min.js"></script>
+  <script src="/assets/utils.js"></script>
+  <link rel="stylesheet" type="text/css" href="/assets/jquery.fancybox.min.css">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    .mapboxgl-popup-content img {
+      width: 100%;
+    }
+
+    .mapboxgl-popup-close-button {
+      top: -40px;
+      background: white;
+      font-size: 40px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav id="menu"></nav>
+  <div id="map"></div>
+  </div>
+
+
+  <script>
+    mapboxgl.accessToken = 'pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw';
+    const storage = window.localStorage;
+    const storedCenter = storage.getItem('map_center')
+    const center = storedCenter && JSON.parse(storedCenter)
+    const map = new mapboxgl.Map({
+      container: 'map',
+      zoom: 5,
+      center: center || [0, 0],
+      // pitch: 45,
+      // bearing: 0,
+      style: 'mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f'
+    });
+
+
+    map.on('load', () => {
+      axios.get('http://localhost:3000/mapeo')
+        .then((mapeo) => {
+          // handle success
+          const cleanObs = mapeo.data.filter(obs => (obs.lat && obs.lon))
+          const listOfCoords = cleanObs.map(i => [
+            i.lon, i.lat
+          ])
+          const mapCenter = getLatLngCenter(listOfCoords)
+          storage.setItem('map_center', JSON.stringify(mapCenter))
+          map.flyTo({
+            center: mapCenter
+          });
+          let categoryIndex = {}
+          cleanObs.forEach(obs => {
+            if (categoryIndex.obs?.tags?.categoryId[obs.tags?.categoryId]) return
+            categoryIndex[obs.tags?.categoryId] = getRandomColor()
+          });
+          cleanObs.map(mapeoObs => {
+            const marker = new mapboxgl.Marker({
+              color: categoryIndex[mapeoObs.tags?.categoryId],
+              // draggable: true
+            }).setLngLat([mapeoObs.lon, mapeoObs.lat])
+              .addTo(map);
+          })
+        })
+
+      map.addControl(new mapboxgl.NavigationControl());
+
+      // mouse behavior for popups
+      map.on('mouseenter', 'March 2022 points', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'March 2022 points', () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      map.on('mouseenter', 'March 2022 icons', () => {
+        map.getCanvas().style.cursor = 'pointer';
+      });
+
+      map.on('mouseleave', 'March 2022 icons', () => {
+        map.getCanvas().style.cursor = '';
+      });
+
+      // Popups for Mapeo observations
+      map.on('click', (event) => {
+
+        const features = map.queryRenderedFeatures(event.point);
+        if (!features.length) {
+          return;
+        }
+
+        const feature = features[0];
+        let popupContent = "";
+        let featureKeys = Object.keys(feature.properties);
+        let featureValues = Object.values(feature.properties);
+
+        for (i = 0; i < featureKeys.length; i++) {
+          // add photo thumbnails
+          if (featureKeys[i] == "$photos") {
+            let obsPhotos = featureValues[i].replace(/[\[\]\"]/g, "").split(',');
+            for (j = 0; j < obsPhotos.length; j++) {
+              let featureNotes = "";
+              if (feature.properties.notes) {
+                featureNotes = ` data-caption="${feature.properties.notes}"`
+              }
+              // popupContent += `<a href="http://23.253.175.113/boititap-korenyo/images/${obsPhotos[j]}" data-fancybox${featureNotes}  target="_blank"><img src="http://23.253.175.113/boititap-korenyo/images/${obsPhotos[j]}" style="width: 25%;" alt="image"></a> `;
+              popupContent += `<a href="./images/${obsPhotos[j]}" data-fancybox${featureNotes}  target="_blank"><img src="./images/${obsPhotos[j]}" alt="image"></a> `;
+            }
+          }
+        }
+
+        const popup = new mapboxgl.Popup({ offset: [0, -15] })
+          .setLngLat(feature.geometry.coordinates)
+          .setHTML(popupContent)
+          .addTo(map);
+      });
+
+      // toggle between different Mapeo datasets
+      const dataToggle = document.createElement('a');
+      dataToggle.href = "#";
+      dataToggle.textContent = "View April 2021 data";
+
+      // layers to turn on/off
+      const dataLayers = ['April 2021 icons', 'March 2022 points', 'March 2022 icons'];
+
+      dataToggle.onclick = (e) => {
+        if (dataToggle.textContent == "View March 2022 data") {
+          dataToggle.textContent = "View April 2021 data";
+        } else {
+          dataToggle.textContent = "View March 2022 data";
+        }
+        e.preventDefault();
+        e.stopPropagation();
+
+        for (i = 0; i < dataLayers.length; i++) {
+          const clickedLayer = dataLayers[i];
+          const visibility = map.getLayoutProperty(clickedLayer, 'visibility');
+
+          // toggle layer visibility by changing the layout object's visibility property as set in Studio
+          if ((visibility === 'visible') || (visibility === undefined)) {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
+          } else {
+            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
+          }
+        };
+      }
+    })
+  </script>
+  // jquery for lightbox
+  <script src="/assets/jquery-3.2.1.min.js"></script>
+  <script src="/assets/jquery.fancybox.min.js"></script>
+</body>
+
+</html>
