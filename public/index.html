@@ -4,11 +4,14 @@
 <head>
   <meta charset="utf-8">
   <title>Mapeo Bridge</title>
-  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="/assets/tailwind.css"></script>
   <link href="/assets/mapbox-gl.css" rel="stylesheet">
   <script src="/assets/mapbox-gl.js"></script>
   <script src="/assets/axios.min.js"></script>
   <script src="/assets/utils.js"></script>
+  <script src="/assets/uhttpd.service.js"></script>
+  <script src="/assets/api.js"></script>
   <link rel="stylesheet" type="text/css" href="/assets/jquery.fancybox.min.css">
   <style>
     body {
@@ -28,15 +31,94 @@
     }
 
     .mapboxgl-popup-close-button {
-      top: -40px;
-      background: white;
+      top: 5px;
+      right: 5px;
       font-size: 40px;
+    }
+
+
+    #nav {
+      position: absolute;
+      top: 0;
+      z-index: 99;
+      width: 100%;
     }
   </style>
 </head>
 
 <body>
-  <nav id="menu"></nav>
+  <nav id="nav" class="bg-gray-800">
+    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+      <div class="relative flex h-16 items-center justify-between">
+        <div class="relative items-center justify-between hidden md:flex">
+          <h3 class="text-gray-100">LibreMesh Mapeo</h3>
+          <a target="_blank" href="https://libremesh.org"><img style="height: 25px" class="px-4"
+              src="/assets/lime.png" /></a>
+          <a target="_blank" href="https://mapeo.app"><img style="height: 35px" src="/assets/mapeo.png" /></a>
+        </div>
+        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+          <button id="save" type="button"
+            class="px-4 hidden rounded-full bg-gray-800 p-1 text-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <span class="sr-only">Add marker</span>
+            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+              <path d="M1 7l4.5 4.5L14 3" stroke="currentColor" stroke-linecap="square"></path>
+            </svg>
+          </button>
+          <button id="cancel" type="button"
+            class="px-4 hidden rounded-full bg-gray-800 p-1 text-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <span class="sr-only">Add marker</span>
+            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+              <path d="M1.5 1.5l12 12m-12 0l12-12" stroke="currentColor"></path>
+            </svg>
+          </button>
+          <button id="add" ¨ type="button"
+            class="px-4 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+            <span class="sr-only">Add marker</span>
+            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+              <path d="M7.5 1v13M1 7.5h13" stroke="currentColor"></path>
+            </svg> </button>
+          <div class="relative ml-3">
+            <div>
+              <button type="button"
+                class="flex px-4 rounded-full bg-gray-800 text-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">About</span>
+                <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+                  <path
+                    d="M7 4.5V5h1v-.5H7zm1-.01v-.5H7v.5h1zM8 11V7H7v4h1zm0-6.5v-.01H7v.01h1zM6 8h1.5V7H6v1zm0 3h3v-1H6v1zM7.5 1A6.5 6.5 0 0114 7.5h1A7.5 7.5 0 007.5 0v1zM1 7.5A6.5 6.5 0 017.5 1V0A7.5 7.5 0 000 7.5h1zM7.5 14A6.5 6.5 0 011 7.5H0A7.5 7.5 0 007.5 15v-1zm0 1A7.5 7.5 0 0015 7.5h-1A6.5 6.5 0 017.5 14v1z"
+                    fill="currentColor"></path>
+                </svg> </button>
+            </div>
+          </div>
+          <div class="relative ml-3">
+            <div>
+              <button type="button"
+                class="flex px-4 rounded-full bg-gray-800 text-gray-400 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                id="filter-button" aria-expanded="false" aria-haspopup="true">
+                <span class="sr-only">Toggle</span>
+                <svg class="hidden text-orange-600" id="icon-router" viewBox="0 0 15 16" fill="none"
+                  xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+                  <path
+                    d="M1.5 10.5V10H1v.5h.5zm12 0h.5V10h-.5v.5zm0 5v.5h.5v-.5h-.5zm-12 0H1v.5h.5v-.5zm1.72-8.339C4.373 5.761 5.916 5 7.5 5V4c-1.917 0-3.732.924-5.052 2.525l.771.636zM7.5 5c1.583 0 3.126.762 4.281 2.161l.771-.636C11.232 4.924 9.417 4 7.5 4v1zm-6.614.318C2.659 3.168 5.042 1.985 7.5 1.985v-1C4.707.985 2.054 2.331.114 4.682l.772.636zM7.5 1.985c2.458 0 4.84 1.183 6.614 3.333l.772-.636C12.946 2.33 10.293.985 7.5.985v1zM7 7v3h1V7H7zm-5.5 4h12v-1h-12v1zm11.5-.5v5h1v-5h-1zm.5 4.5h-12v1h12v-1zM2 15.5v-5H1v5h1z"
+                    fill="currentColor"></path>
+                </svg>
+                <svg class="text-blue-600" id="icon-map" viewBox="0 0 15 15" fill="none"
+                  xmlns="http://www.w3.org/2000/svg" width="15" height="15">
+                  <path
+                    d="M3.5 11.5l-.429-.257a.5.5 0 00.686.686L3.5 11.5zm3-5l-.257-.429-.107.065-.065.107.429.257zm5-3l.429.257a.5.5 0 00-.686-.686l.257.429zm-3 5l.257.429.107-.065.065-.107L8.5 8.5zm5.5-1A6.5 6.5 0 017.5 14v1A7.5 7.5 0 0015 7.5h-1zM7.5 14A6.5 6.5 0 011 7.5H0A7.5 7.5 0 007.5 15v-1zM1 7.5A6.5 6.5 0 017.5 1V0A7.5 7.5 0 000 7.5h1zM7.5 1A6.5 6.5 0 0114 7.5h1A7.5 7.5 0 007.5 0v1zM3.929 11.757l3-5-.858-.514-3 5 .858.514zM6.757 6.93l5-3-.514-.858-5 3 .514.858zm4.314-3.686l-3 5 .858.514 3-5-.858-.514zM8.243 8.07l-5 3 .514.858 5-3-.514-.858z"
+                    fill="currentColor"></path>
+                </svg>
+              </button>
+            </div>
+          </div>
+          </button>
+        </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </nav>
+
   <div id="map"></div>
   </div>
 
@@ -44,6 +126,7 @@
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw';
     const storage = window.localStorage;
+    const filteredTypes = ['roteador', 'librerouter-v1']
     const storedCenter = storage.getItem('map_center')
     const center = storedCenter && JSON.parse(storedCenter)
     const map = new mapboxgl.Map({
@@ -55,119 +138,84 @@
       style: 'mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f'
     });
 
+    // Network
+    api.login('lime-app', 'generic')
+      .then(data => {
+        const token = data.ubus_rpc_session
+        console.log('token', token)
+        // Get all nodes in network
+        // Find those that have not been connected to Mapeo observation
+        // When marker of an unconnected observation is clicked the unconnected nodes are presented as options
+        // On-connect mapeo-bridge updates observation:
+        // - include link between node (hostname) and observation
+        // - change category to device type (router model)
+        // - connections (nodes) and quality fields (snr, signal, etc)
+      })
+      .catch(e => {
+        console.log('CAUGHT ERROR:', e)
+      })
 
+    // Map
     map.on('load', () => {
-      axios.get('http://localhost:3000/mapeo')
-        .then((mapeo) => {
-          // handle success
-          const cleanObs = mapeo.data.filter(obs => (obs.lat && obs.lon))
-          const listOfCoords = cleanObs.map(i => [
-            i.lon, i.lat
-          ])
-          const mapCenter = getLatLngCenter(listOfCoords)
-          storage.setItem('map_center', JSON.stringify(mapCenter))
-          map.flyTo({
-            center: mapCenter
-          });
-          let categoryIndex = {}
-          cleanObs.forEach(obs => {
-            if (categoryIndex.obs?.tags?.categoryId[obs.tags?.categoryId]) return
-            categoryIndex[obs.tags?.categoryId] = getRandomColor()
-          });
-          cleanObs.map(mapeoObs => {
-            const marker = new mapboxgl.Marker({
-              color: categoryIndex[mapeoObs.tags?.categoryId],
-              // draggable: true
-            }).setLngLat([mapeoObs.lon, mapeoObs.lat])
-              .addTo(map);
-          })
-        })
-
-      map.addControl(new mapboxgl.NavigationControl());
-
-      // mouse behavior for popups
-      map.on('mouseenter', 'March 2022 points', () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-
-      map.on('mouseleave', 'March 2022 points', () => {
-        map.getCanvas().style.cursor = '';
-      });
-
-      map.on('mouseenter', 'March 2022 icons', () => {
-        map.getCanvas().style.cursor = 'pointer';
-      });
-
-      map.on('mouseleave', 'March 2022 icons', () => {
-        map.getCanvas().style.cursor = '';
-      });
-
-      // Popups for Mapeo observations
-      map.on('click', (event) => {
-
-        const features = map.queryRenderedFeatures(event.point);
-        if (!features.length) {
-          return;
-        }
-
-        const feature = features[0];
-        let popupContent = "";
-        let featureKeys = Object.keys(feature.properties);
-        let featureValues = Object.values(feature.properties);
-
-        for (i = 0; i < featureKeys.length; i++) {
-          // add photo thumbnails
-          if (featureKeys[i] == "$photos") {
-            let obsPhotos = featureValues[i].replace(/[\[\]\"]/g, "").split(',');
-            for (j = 0; j < obsPhotos.length; j++) {
-              let featureNotes = "";
-              if (feature.properties.notes) {
-                featureNotes = ` data-caption="${feature.properties.notes}"`
-              }
-              // popupContent += `<a href="http://23.253.175.113/boititap-korenyo/images/${obsPhotos[j]}" data-fancybox${featureNotes}  target="_blank"><img src="http://23.253.175.113/boititap-korenyo/images/${obsPhotos[j]}" style="width: 25%;" alt="image"></a> `;
-              popupContent += `<a href="./images/${obsPhotos[j]}" data-fancybox${featureNotes}  target="_blank"><img src="./images/${obsPhotos[j]}" alt="image"></a> `;
-            }
-          }
-        }
-
-        const popup = new mapboxgl.Popup({ offset: [0, -15] })
-          .setLngLat(feature.geometry.coordinates)
-          .setHTML(popupContent)
-          .addTo(map);
-      });
-
-      // toggle between different Mapeo datasets
-      const dataToggle = document.createElement('a');
-      dataToggle.href = "#";
-      dataToggle.textContent = "View April 2021 data";
-
-      // layers to turn on/off
-      const dataLayers = ['April 2021 icons', 'March 2022 points', 'March 2022 icons'];
-
-      dataToggle.onclick = (e) => {
-        if (dataToggle.textContent == "View March 2022 data") {
-          dataToggle.textContent = "View April 2021 data";
-        } else {
-          dataToggle.textContent = "View March 2022 data";
-        }
-        e.preventDefault();
-        e.stopPropagation();
-
-        for (i = 0; i < dataLayers.length; i++) {
-          const clickedLayer = dataLayers[i];
-          const visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-
-          // toggle layer visibility by changing the layout object's visibility property as set in Studio
-          if ((visibility === 'visible') || (visibility === undefined)) {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-          } else {
-            map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-          }
-        };
-      }
+      observationsToMarkers({ map, filter: filteredTypes })
     })
+    // Filter
+    let filterState = filteredTypes
+    const filterButton = document.getElementById('filter-button')
+    const routerIcon = document.getElementById('icon-router')
+    const mapIcon = document.getElementById('icon-map')
+
+    filterButton.onclick = (e) => {
+      filterState = filterState ? null : filteredTypes
+      if (!filterState) {
+        routerIcon.classList.remove('hidden')
+        mapIcon.classList.add('hidden')
+      } else {
+        routerIcon.classList.add('hidden')
+        mapIcon.classList.remove('hidden')
+      }
+      observationsToMarkers({
+        map,
+        noFly: true,
+        filter: filterState
+      })
+    }
+
+    // Add new router
+    const addButton = document.getElementById('add')
+    const saveButton = document.getElementById('save')
+    const cancelButton = document.getElementById('cancel')
+    let editMarker
+    function cancelMaker() {
+      editMarker.remove()
+      editMarker = undefined
+      saveButton.classList.add('hidden');
+      cancelButton.classList.add('hidden');
+    }
+    addButton.onclick = (e) => {
+      if (editMarker) editMarker.remove()
+      else {
+        saveButton.classList.remove('hidden');
+        cancelButton.classList.remove('hidden');
+      }
+      editMarker = new mapboxgl.Marker({ draggable: true }).setLngLat(map.getCenter())
+        .addTo(map);
+
+    }
+    cancelButton.onclick = (e) => {
+      cancelMaker()
+    }
+    saveButton.onclick = (e) => {
+      axios.post('http://localhost:3000/mapeo', editMarker._lngLat)
+        .then(data => {
+          observationsToMarkers({ map, noFly: true })
+        })
+        .catch(err => console.log('Error on saving', err))
+
+      cancelMaker()
+    }
   </script>
-  // jquery for lightbox
+  Loading...
   <script src="/assets/jquery-3.2.1.min.js"></script>
   <script src="/assets/jquery.fancybox.min.js"></script>
 </body>

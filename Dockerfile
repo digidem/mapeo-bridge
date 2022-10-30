@@ -11,7 +11,6 @@ RUN npm install --fetch-retry-maxtimeout 300000 --no-optional
 # expose ports on container
 EXPOSE 5353
 EXPOSE 42157
-EXPOSE 3000
 
 # start the app
 CMD [ "npm", "start" ]

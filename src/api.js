@@ -6,20 +6,47 @@ module.exports = (mapeo, filteredType) => {
         reply.sendFile('index.html') // serving path.join(__dirname, 'public', 'myHtml.html') directly
     })
     fastify.get('/mapeo', (req, reply) => {
-        // const asyncObs = promisify(mapeo.observationList(null))
-        // console.log(asyncObs)
-        // const data = await asyncObs()
         mapeo.observationList(null, (err, data) => {
             if (err) return console.error(err)
-            console.log('GOT DATA')
-            // return data
             reply.send(data)
         })
-        // console.log('DATA', data)
 
     })
-    fastify.get('/test', async (request, reply) => {
-        return { hello: 'world' }
+    fastify.post('/mapeo', (req, reply) => {
+        const { lat, lng } = req.body
+        const obs = {
+            attachments: [],
+            type: 'observation',
+            lat,
+            lon: lng,
+            tags: {
+              categoryId: 'roteador'
+            }
+          }
+        mapeo.observationCreate(obs, (err, data) => {
+            if (err) console.error(err)
+            reply.send(data)
+        })
+    })
+    fastify.put('/mapeo', (req, reply) => {
+        const { observationId, observationVersion, nodeHostname, nodeModel } = req.body
+        const obs = {
+            version: observationVersion,
+            id: observationId,
+            type: 'observation',
+            tags: {
+              categoryId: nodeModel,
+              hostname: nodeHostname
+            }
+          }
+          mapeo.observationUpdate(obs, (err, data) => {
+            console.log('data', data)
+            if (err) {
+                console.error(err)
+                reply.err(err)
+            }
+            reply.send(data)
+          })
     })
 
     // Run the server!
