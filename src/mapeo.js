@@ -21,7 +21,7 @@ const AUTO_SYNC = process.env.AUTO_SYNC
 // If a mapeo instance hasn't been accessed for a minute, we should clear it out
 const DEFAULT_GC_DELAY = 60 * 1000
 const HOSTNAME = require('os').hostname()
-const DEFAULT_NAME = 'Mapeo Bridge ' + HOSTNAME
+const DEFAULT_NAME = HOSTNAME || 'Mapeo Bridge'
 const DEVICE_TYPE = 'desktop' // 'cloud' in the future
 
 module.exports = class MultiMapeo extends EventEmitter {
