@@ -207,8 +207,10 @@
     const cancelButton = document.getElementById('cancel')
     let editMarker
     function cancelMaker() {
-      editMarker.remove()
-      editMarker = undefined
+      if (editMarker) {
+        editMarker.remove()
+        editMarker = undefined
+      }
       saveButton.classList.add('hidden');
       cancelButton.classList.add('hidden');
     }
