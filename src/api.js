@@ -20,7 +20,8 @@ module.exports = (mapeo, filteredType) => {
             lat,
             lon: lng,
             tags: {
-              categoryId: 'roteador'
+              categoryId: 'router',
+              type: 'network'
             }
           }
         mapeo.observationCreate(obs, (err, data) => {
@@ -36,7 +37,8 @@ module.exports = (mapeo, filteredType) => {
             type: 'observation',
             tags: {
               categoryId: nodeModel,
-              hostname: nodeHostname
+              hostname: nodeHostname,
+              type: 'network'
             }
           }
           mapeo.observationUpdate(obs, (err, data) => {

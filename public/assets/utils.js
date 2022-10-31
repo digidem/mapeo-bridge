@@ -65,7 +65,7 @@ function unlinkObservation(observationId, observationVersion) {
         observationId,
         observationVersion,
         nodeHostname: null,
-        nodeModel: 'roteador' //
+        nodeModel: 'router' //
     })
         .then(update => {
             observationsToMarkers({ noFly: true, filter: window.filteredTypes })
@@ -98,7 +98,7 @@ function updateObservation(node, observationId, observationVersion) {
 /** check is in filter */
 function checkIsFiltered(obs, filter) {
     if (filter && Array.isArray(filter)) {
-        const filtered = filter.filter(e => obs.tags?.categoryId === e)
+        const filtered = filter.filter(e => obs.tags?.type === 'network')
         if (filtered.length > 0) return obs
     }
 }
