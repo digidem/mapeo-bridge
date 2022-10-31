@@ -183,7 +183,6 @@ async function observationsToMarkers({ noFly, filter }) {
                     const nodeSession = await getSession(hostname)
                     if (!nodeSession?.username) await api.login('lime-app', 'generic', hostname)
                     const boardInfo = await getBoardData(hostname)
-                    console.log(boardInfo)
                     const meshInterfaces = await getMeshIfaces(hostname)
                     let interfaceList = []
                     for await (const interface of meshInterfaces) {
