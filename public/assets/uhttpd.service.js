@@ -33,7 +33,8 @@ class UhttpdService {
 	}
 
 
-	call(action, method, data, customSid = null, timeout = null) {
+	async call(action, method, data, hostname, customSid = null, timeout = null) {
+		const url = hostname ? `http://${hostname}/ubus` : this.url // Must be dynamic to pull from other nodes
 		this.sec +=1;
 		const body = {
 			id: this.addId(),
@@ -43,16 +44,16 @@ class UhttpdService {
 		};
 		const controller = new AbortController();
 		const id = setTimeout(() => controller.abort(), timeout || 15000);
-		return fetch(this.url,
+		return fetch(url,
 			{ method: 'POST', body: JSON.stringify(body), signal: controller.signal })
 			.then(response => response.json())
 			.then(parseResult)
 			.finally(clearTimeout(id));
 	}
 
-	login(username, password) {
+	login(username, password, hostname) {
 		const data = { username, password, timeout: DEFAULT_SESSION_TIMEOUT };
-		return this.call('session', 'login', data, UNAUTH_SESSION_ID)
+		return this.call('session', 'login', data, hostname, UNAUTH_SESSION_ID)
 			.then(response =>
 				new Promise((res, rej) => {
 					if (response.ubus_rpc_session) {
