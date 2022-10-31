@@ -5,8 +5,13 @@
 Easiest way is to run on Docker:
 
 ```
-docker run -it --network=host communityfirst/mapeo-bridge:libremesh
+docker run -it \
+    --network=host \
+    -v /path/to/storage:/root/.mapeo-bridge \
+    communityfirst/mapeo-bridge:libremesh
 ```
+
+We need to use `network=host` for local mDNS discovery to work properly.
 
 Or clone the project, install with `npm i` and run with `npm start`.
 
