@@ -112,8 +112,7 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
     }
     /** generate html for each obs */
     clearMarkers()
-    // for await (const mapeoObs of cleanObs) {
-    cleanObs.forEach(async mapeoObs => {
+    for await (const mapeoObs of cleanObs) { // has to be synchronous else authentication gets confused
         try {
             let networkButtons = ''
             let content = ''
@@ -210,5 +209,5 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
             console.log(`Error generating HTML for ${mapeoObs.id}:`, err)
             return
         }
-    })
+    }
 }
