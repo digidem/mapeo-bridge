@@ -38,6 +38,7 @@ function generateMarker(mapeoObs, markerEl, popupContent) {
         .setLngLat([mapeoObs.lon, mapeoObs.lat])
         .addTo(map);
     currentMarkers.push(marker)
+    return marker
 }
 
 function genElement(categoryId) {
@@ -53,6 +54,21 @@ function genElement(categoryId) {
     el.style.borderRadius = `${width}px`
     return el
 }
+
+const genContent = (mapeoObs, nodeInfo) => `<div class="px-4 py-12">
+        <h1 class="text-lg capitalize text-xl">${mapeoObs.tags?.hostname}</h1>
+        ${nodeInfo || `<h2 class="text-red-600">Offline</h2>`}
+        <div class="flex flex-row justify-between">
+        <a class="bg-indigo-500 text-white text-center px-4 py-2 my-4" target="_blank" href="http://${mapeoObs.tags?.hostname}/">
+            Visit node
+        </a>
+        <button
+            onclick="unlinkObservation('${mapeoObs.id}', '${mapeoObs.version}')"
+            class="bg-red-500 text-white text-center px-4 py-2 my-4" target="_blank" href="http://${mapeoObs.tags?.hostname}/">
+        Unlink node
+    </button>
+    </div>
+</div>`
 
 async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
     console.log('Redraw...')
@@ -94,12 +110,15 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
         const parsedContent = JSON.parse(content)
         generateMarker(mapeoObs, el, parsedContent)
     }
-    try {
-        /** generate html for each obs */
-        clearMarkers()
-        for await (const mapeoObs of cleanObs) {
+    /** generate html for each obs */
+    clearMarkers()
+    // for await (const mapeoObs of cleanObs) {
+    cleanObs.forEach(async mapeoObs => {
+        try {
             let networkButtons = ''
             let content = ''
+            let tempMarker
+            let nodeInfo
             const isFiltered = checkIsFiltered(mapeoObs, filter)
             const hostname = mapeoObs.tags?.hostname
             /** if observation is one of the filtered types */
@@ -120,65 +139,64 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
                         </div>`
                 } else {
                     /** if observation IS connected to node */
-                    const nodeSession = await getSession(hostname)
-                    if (!nodeSession?.username) await api.login('lime-app', 'generic', hostname)
-                    const boardInfo = await getBoardData(hostname)
-                    const meshInterfaces = await getMeshIfaces(hostname)
-                    let interfaceList = []
-                    for await (const interface of meshInterfaces) {
-                        let assocs = await getAssocList(interface, hostname)
-                        for await (const [index, assoc] of assocs.entries()) {
-                            const getAssocHostname = await getBatHost(assoc.mac, interface, hostname)
-                            const assocHostname = getAssocHostname.hostname
-                            const lineDestObs = cleanObs.filter(o => o.tags?.hostname === assocHostname)
-                            const lineDest = lineDestObs[0]
-                            const quality = assoc.signal_avg > -72 ? 3 : assoc.signal_avg > -76 ? 2 : 1
-                            if (lineDest) {
-                                const lineOrigin = [mapeoObs.lon, mapeoObs.lat]
-                                const id = `route-${crypto.randomUUID()}`
-                                addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], quality)
-                                currentLines.push(id)
+                    content = genContent(mapeoObs, nodeInfo)
+                    tempMarker = generateMarker(mapeoObs, el, content)
+                    try {
+                        const nodeSession = await getSession(hostname)
+                        if (!nodeSession?.username) await api.login('lime-app', 'generic', hostname)
+                        const boardInfo = await getBoardData(hostname)
+                        const meshInterfaces = await getMeshIfaces(hostname)
+                        let interfaceList = []
+                        for await (const interface of meshInterfaces) {
+                            let assocs = await getAssocList(interface, hostname)
+                            for await (const [index, assoc] of assocs.entries()) {
+                                const getAssocHostname = await getBatHost(assoc.mac, interface, hostname)
+                                const assocHostname = getAssocHostname.hostname
+                                const lineDestObs = cleanObs.filter(o => o.tags?.hostname === assocHostname)
+                                const lineDest = lineDestObs[0]
+                                const quality = assoc.signal_avg > -72 ? 3 : assoc.signal_avg > -76 ? 2 : 1
+                                if (lineDest) {
+                                    const lineOrigin = [mapeoObs.lon, mapeoObs.lat]
+                                    const id = `route-${crypto.randomUUID()}`
+                                    addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], quality)
+                                    currentLines.push(id)
+                                }
+                                assocs[index].hostname = assocHostname
                             }
-                            assocs[index].hostname = assocHostname
-                        }
-                        interfaceList.push({
-                            interface,
-                            assocs
-                        })
+                            interfaceList.push({
+                                interface,
+                                assocs
+                            })
 
-                    }
-                    content = `<div class="px-4 py-12">
-                            <h1 class="text-lg capitalize text-xl">${mapeoObs.tags?.hostname}</h1>
-                            <h3 class="text-md py-4">${boardInfo.model}</h3>
-                            <div class="flex">
-                                <span class="px-1">${boardInfo.release.distribution}</span>
-                                <span class="px-1">${boardInfo.release.version}</span>
-                            </div>
-                            <div class="flex mt-4 min-w-80">
-                            ${interfaceList.map(interface => `<div class="border-green-900 border-2 p-2 rounded">${interface.assocs?.length > 0 ?
-                        `<div class="flex justify-between">
-                                    <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.219 9.318c1.155-1.4 2.698-2.161 4.281-2.161v-1c-1.917 0-3.732.924-5.052 2.525l.771.636zM7.5 7.157c1.583 0 3.126.762 4.281 2.161l.771-.636C11.232 7.08 9.417 6.157 7.5 6.157v1zM.886 6.318C2.659 4.168 5.042 2.985 7.5 2.985v-1c-2.793 0-5.446 1.346-7.386 3.697l.772.636zM7.5 2.985c2.458 0 4.84 1.183 6.614 3.333l.772-.636C12.946 3.33 10.293 1.985 7.5 1.985v1zM7.5 12a.5.5 0 01-.5-.5H6A1.5 1.5 0 007.5 13v-1zm.5-.5a.5.5 0 01-.5.5v1A1.5 1.5 0 009 11.5H8zm-.5-.5a.5.5 0 01.5.5h1A1.5 1.5 0 007.5 10v1zm0-1A1.5 1.5 0 006 11.5h1a.5.5 0 01.5-.5v-1z" fill="currentColor"></path></svg>
-                                    <div class="flex justify-between">
-                                        ${interface.assocs.map(assoc => `<span class="px-2">${assoc.signal_avg}</span>`)}
-                                    </div>
-                                </div>`
-                        : `<svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M6.5 11.5a1 1 0 102 0 1 1 0 00-2 0z" stroke="currentColor"></path></svg>`
-                        }</div>`
-                    )}
-                            </div>
-                            <div class="flex flex-row justify-between">
-                            <a class="bg-indigo-500 text-white text-center px-4 py-2 my-4" target="_blank" href="http://${mapeoObs.tags?.hostname}/">
-                                Visit node
-                            </a>
-                            <button
-                                onclick="unlinkObservation('${mapeoObs.id}', '${mapeoObs.version}')"
-                                class="bg-red-500 text-white text-center px-4 py-2 my-4" target="_blank" href="http://${mapeoObs.tags?.hostname}/">
-                            Unlink node
-                        </button>
+                        }
+                        nodeInfo = `<h3 class="text-md py-4">${boardInfo.model}</h3>
+                        <div class="flex">
+                            <span class="px-1">${boardInfo.release.distribution}</span>
+                            <span class="px-1">${boardInfo.release.version}</span>
                         </div>
+                        <div class="flex mt-4 min-w-80">
+                        ${interfaceList.map(interface => `<div class="border-green-900 border-2 p-2 rounded">${interface.assocs?.length > 0 ?
+                            `<div class="flex justify-between">
+                                <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.219 9.318c1.155-1.4 2.698-2.161 4.281-2.161v-1c-1.917 0-3.732.924-5.052 2.525l.771.636zM7.5 7.157c1.583 0 3.126.762 4.281 2.161l.771-.636C11.232 7.08 9.417 6.157 7.5 6.157v1zM.886 6.318C2.659 4.168 5.042 2.985 7.5 2.985v-1c-2.793 0-5.446 1.346-7.386 3.697l.772.636zM7.5 2.985c2.458 0 4.84 1.183 6.614 3.333l.772-.636C12.946 3.33 10.293 1.985 7.5 1.985v1zM7.5 12a.5.5 0 01-.5-.5H6A1.5 1.5 0 007.5 13v-1zm.5-.5a.5.5 0 01-.5.5v1A1.5 1.5 0 009 11.5H8zm-.5-.5a.5.5 0 01.5.5h1A1.5 1.5 0 007.5 10v1zm0-1A1.5 1.5 0 006 11.5h1a.5.5 0 01.5-.5v-1z" fill="currentColor"></path></svg>
+                                <div class="flex justify-between">
+                                    ${interface.assocs.map(assoc => `<span class="px-2">${assoc.signal_avg}</span>`)}
+                                </div>
+                            </div>`
+                            : `<svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M6.5 11.5a1 1 0 102 0 1 1 0 00-2 0z" stroke="currentColor"></path></svg>`
+                            }</div>`
+                        )}
                         </div>`
+                    } catch (err) {
+                        console.log('Error communicating with node', hostname)
+                    }
+
+
+                }
+                if (hostname) {
+                    content = genContent(mapeoObs, nodeInfo)
                 }
                 window.localStorage.setItem(`content-${mapeoObs.id}`, JSON.stringify(content))
+                if (tempMarker) tempMarker.remove()
                 generateMarker(mapeoObs, el, content)
             } else {
                 const marker = new mapboxgl.Marker({
@@ -189,8 +207,9 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
                 currentMarkers.push(marker)
 
             }
+        } catch (err) {
+            console.log(`Error generating HTML for ${mapeoObs.id}:`, err)
+            return
         }
-    } catch (err) {
-        console.log('Error generating HTML:', err)
-    }
+    })
 }
