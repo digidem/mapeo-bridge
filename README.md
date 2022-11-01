@@ -19,7 +19,16 @@ The interface will load on [localhost:3000](http://localhost:3000/).
 
 The Mapeo server comes pre-configured to run with the project key of the [community-networks config](https://github.com/digidem/config-cn/releases). To change the project-key run the project with the `MAPEO_PROJECT_KEY` set to your key.
 
-### Goals
+### TODO
 
-- Syncronize with Mapeo devices
-- Convert Mapeo "Terrastories" category data into Terrastories compatible spreadsheets
+- Add all community supported LibreMesh (LROS) devices
+- Only show connections for observation once clicked
+- Cache all data
+- Add visual cue as to connection to Mapeo server and LibreMesh node
+- Re-write using a framework and taking into account performance and network failure
+- Add support for offline map tiles from [tileserver-gl](https://github.com/maptiler/tileserver-gl) or Mapeo map-server
+
+### Future work
+
+- Add [Grafana](https://github.com/libremesh/lime-packages/blob/master/packages/altermundi-grafana/files/etc/uci-defaults/90_altermundi-grafana) dashboard
+- Analyze Grafana historic data and generate network notifications to a [gotify](https://gotify.net/) server
