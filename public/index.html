@@ -8,6 +8,7 @@
   <script src="/assets/uhttpd.service.js"></script>
   <script src="/assets/api.js"></script>
   <script src="/assets/addLine.js"></script>
+  <script src="/assets/generateHtml.js"></script>
   <script src="/assets/utils.js"></script>
   <script src="/assets/tailwind.css"></script>
   <link href="/assets/mapbox-gl.css" rel="stylesheet">
@@ -138,6 +139,7 @@
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw';
     const storage = window.localStorage;
     const filteredTypes = ['roteador', 'librerouter-v1', 'tp-link-tl-wdr3500-v1']
+    let addLoading
     const storedCenter = storage.getItem('map_center')
     const center = storedCenter && JSON.parse(storedCenter)
     const map = new mapboxgl.Map({
@@ -225,12 +227,14 @@
     }
     saveButton.onclick = async (e) => {
       try {
+        saveButton.disabled = true
         const data = await axios.post('http://localhost:3000/mapeo', editMarker._lngLat)
+        cancelMaker()
+        saveButton.disabled = false
         await observationsToMarkers({ map, noFly: true, filter: filteredTypes })
       } catch (err) {
         console.log('Error on saving', err)
       }
-      cancelMaker()
     }
   </script>
   Loading...

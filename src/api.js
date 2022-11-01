@@ -20,10 +20,10 @@ module.exports = (mapeo, filteredType) => {
             lat,
             lon: lng,
             tags: {
-              categoryId: 'router',
-              type: 'network'
+                categoryId: 'router',
+                type: 'network'
             }
-          }
+        }
         mapeo.observationCreate(obs, (err, data) => {
             if (err) console.error(err)
             reply.send(data)
@@ -36,19 +36,31 @@ module.exports = (mapeo, filteredType) => {
             id: observationId,
             type: 'observation',
             tags: {
-              categoryId: nodeModel,
-              hostname: nodeHostname,
-              type: 'network'
+                categoryId: nodeModel,
+                hostname: nodeHostname,
+                type: 'network'
             }
-          }
-          mapeo.observationUpdate(obs, (err, data) => {
+        }
+        mapeo.observationUpdate(obs, (err, data) => {
             console.log('data', data)
             if (err) {
                 console.error(err)
                 reply.err(err)
             }
             reply.send(data)
-          })
+        })
+    })
+    fastify.delete('/mapeo', (req, reply) => {
+        console.log('req.body', req.body)
+        const { observationId } = req.body
+        mapeo.observationDelete(observationId, (err, data) => {
+            console.log('data', data)
+            if (err) {
+                console.error(err)
+                reply.err(err)
+            }
+            reply.send(data)
+        })
     })
 
     // Run the server!
