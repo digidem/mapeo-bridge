@@ -71,7 +71,7 @@ function genElement(categoryId) {
     const height = 90
     el.className = 'marker';
     el.style.backgroundRepeat = 'no-repeat'
-    el.style.backgroundImage = `url(/assets/routers/${getIcon(categoryId)}.png)`;
+    el.style.backgroundImage = `url(/assets/imgs/routers/${getIcon(categoryId)}.png)`;
     el.style.width = `${width}px`;
     el.style.height = `${height}px`;
     el.style.backgroundSize = '100%';
