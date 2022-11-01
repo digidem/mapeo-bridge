@@ -41,7 +41,7 @@ function generateMarker(mapeoObs, markerEl, popupContent) {
     return marker
 }
 
-function getIcon (model) {
+function getIcon(model) {
     const terms = [
         'librerouter',
         'tp-link-cpe',
@@ -55,6 +55,14 @@ function getIcon (model) {
 
     })
     return match || 'router'
+}
+
+function getQualityColor(signal_avg) {
+    const quality = signal_avg > -65 ? 3 : signal_avg > -82 ? 2 : 1
+    let color
+    if (quality) color = quality === 3 ? 'green' : quality === 2 ? 'orange' : 'red'
+    else color = 'grey'
+    return color
 }
 
 function genElement(categoryId) {
@@ -169,10 +177,11 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
                                 const assocHostname = getAssocHostname.hostname
                                 const lineDestObs = cleanObs.filter(o => o.tags?.hostname === assocHostname)
                                 const lineDest = lineDestObs[0]
+                                const qualityColor = getQualityColor(assoc.signal_avg)
                                 if (lineDest) {
                                     const lineOrigin = [mapeoObs.lon, mapeoObs.lat]
                                     const id = `route-${crypto.randomUUID()}`
-                                    addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], assoc.signal_avg)
+                                    addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], qualityColor)
                                     currentLines.push(id)
                                 }
                                 assocs[index].hostname = assocHostname
@@ -188,12 +197,14 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
                             <span class="px-1">${boardInfo.release.distribution}</span>
                             <span class="px-1">${boardInfo.release.version}</span>
                         </div>
-                        <div class="flex mt-4 min-w-80">
+                        <div class="flex flex-col mt-4 min-w-80">
                         ${interfaceList.map(interface => `<div class="border-green-900 border-2 p-2 rounded">${interface.assocs?.length > 0 ?
-                            `<div class="flex justify-between">
+                            `<div class="flex justify-start">
                                 <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M3.219 9.318c1.155-1.4 2.698-2.161 4.281-2.161v-1c-1.917 0-3.732.924-5.052 2.525l.771.636zM7.5 7.157c1.583 0 3.126.762 4.281 2.161l.771-.636C11.232 7.08 9.417 6.157 7.5 6.157v1zM.886 6.318C2.659 4.168 5.042 2.985 7.5 2.985v-1c-2.793 0-5.446 1.346-7.386 3.697l.772.636zM7.5 2.985c2.458 0 4.84 1.183 6.614 3.333l.772-.636C12.946 3.33 10.293 1.985 7.5 1.985v1zM7.5 12a.5.5 0 01-.5-.5H6A1.5 1.5 0 007.5 13v-1zm.5-.5a.5.5 0 01-.5.5v1A1.5 1.5 0 009 11.5H8zm-.5-.5a.5.5 0 01.5.5h1A1.5 1.5 0 007.5 10v1zm0-1A1.5 1.5 0 006 11.5h1a.5.5 0 01.5-.5v-1z" fill="currentColor"></path></svg>
-                                <div class="flex justify-between">
-                                    ${interface.assocs.map(assoc => `<span class="px-2">${assoc.signal_avg}</span>`)}
+                                <div class="flex flex-wrap justify-between">
+                                    ${interface.assocs
+                                .sort((a, b) => a - b)
+                                .map(assoc => `<span class="px-2 text-${getQualityColor(assoc.signal_avg)}-600">${assoc.signal_avg}</span>`)}
                                 </div>
                             </div>`
                             : `<svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15"><path d="M6.5 11.5a1 1 0 102 0 1 1 0 00-2 0z" stroke="currentColor"></path></svg>`
