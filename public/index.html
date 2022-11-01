@@ -138,7 +138,6 @@
   <script>
     mapboxgl.accessToken = 'pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw';
     const storage = window.localStorage;
-    const filteredTypes = ['roteador', 'librerouter-v1', 'tp-link-tl-wdr3500-v1']
     let addLoading
     const storedCenter = storage.getItem('map_center')
     const center = storedCenter && JSON.parse(storedCenter)
@@ -166,25 +165,24 @@
       })
     );
     window.mapboxMap = map
-    window.filteredTypes = filteredTypes
     // Map
     map.on('load', async () => {
       // Network
       try {
-        await observationsToMarkers({ map, filter: filteredTypes })
+        await observationsToMarkers({ map, filter: true })
       } catch (err) {
         console.log('Error', err)
       }
 
     })
     // Filter
-    let filterState = filteredTypes
+    let filterState = false
     const filterButton = document.getElementById('filter-button')
     const routerIcon = document.getElementById('icon-router')
     const mapIcon = document.getElementById('icon-map')
 
     filterButton.onclick = async (e) => {
-      filterState = filterState ? null : filteredTypes
+      filterState = !filterState
       if (!filterState) {
         routerIcon.classList.remove('hidden')
         mapIcon.classList.add('hidden')
@@ -231,7 +229,7 @@
         const data = await axios.post('http://localhost:3000/mapeo', editMarker._lngLat)
         cancelMaker()
         saveButton.disabled = false
-        await observationsToMarkers({ map, noFly: true, filter: filteredTypes })
+        await observationsToMarkers({ map, noFly: true, filter: true })
       } catch (err) {
         console.log('Error on saving', err)
       }

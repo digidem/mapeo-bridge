@@ -68,7 +68,7 @@ function unlinkObservation(observationId, observationVersion) {
         nodeModel: 'router' //
     })
         .then(update => {
-            observationsToMarkers({ noFly: true, filter: window.filteredTypes })
+            observationsToMarkers({ noFly: true, filter: true })
         })
         .catch(err => console.log(err))
 }
@@ -86,7 +86,7 @@ function updateObservation(node, observationId, observationVersion) {
                         nodeModel: slugify(data.model)
                     })
                         .then(update => {
-                            observationsToMarkers({ noFly: true, filter: window.filteredTypes })
+                            observationsToMarkers({ noFly: true, filter: true })
                         })
                         .catch(err => console.log(err))
                 })
@@ -100,16 +100,14 @@ async function deleteObservation(observationId) {
     let deleteButton = document.getElementById(`delete-button-${observationId}`)
     deleteButton.classList.add = 'hidden'
     const update = await axios.delete('http://localhost:3000/mapeo', { data: { observationId } })
-    await observationsToMarkers({ noFly: true, filter: window.filteredTypes })
+    await observationsToMarkers({ noFly: true, filter: true })
     deleteButton.classList.remove = 'hidden'
 }
 
 /** check is in filter */
 function checkIsFiltered(obs, filter) {
-    if (filter && Array.isArray(filter)) {
-        const filtered = filter.filter(e => obs.tags?.type === 'network')
-        if (filtered.length > 0) return obs
-    }
+    if (filter) return obs.tags?.type === 'network'
+    else return obs
 }
 async function observationsToMarkers({ noFly, filter }) {
     const map = window.mapboxMap

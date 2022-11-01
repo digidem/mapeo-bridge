@@ -41,13 +41,29 @@ function generateMarker(mapeoObs, markerEl, popupContent) {
     return marker
 }
 
+function getIcon (model) {
+    const terms = [
+        'librerouter',
+        'tp-link-cpe',
+        'tp-link-tl-wdr',
+        'tp-link-archer',
+        'n600'
+    ]
+    let match
+    terms.forEach(term => {
+        if (model.indexOf(term) > -1) match = term
+
+    })
+    return match || 'router'
+}
+
 function genElement(categoryId) {
     let el = document.createElement('div');
     const width = 50
     const height = 90
     el.className = 'marker';
     el.style.backgroundRepeat = 'no-repeat'
-    el.style.backgroundImage = `url(/assets/${categoryId}.png)`;
+    el.style.backgroundImage = `url(/assets/routers/${getIcon(categoryId)}.png)`;
     el.style.width = `${width}px`;
     el.style.height = `${height}px`;
     el.style.backgroundSize = '100%';
@@ -121,7 +137,7 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
             const isFiltered = checkIsFiltered(mapeoObs, filter)
             const hostname = mapeoObs.tags?.hostname
             /** if observation is one of the filtered types */
-            if (isFiltered) {
+            if (isFiltered && filter) {
                 const el = genElement(mapeoObs.tags?.categoryId)
                 if (!hostname) {
                     /** if observation is NOT connected to node */

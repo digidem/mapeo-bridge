@@ -22,6 +22,16 @@ The Mapeo server comes pre-configured to run with the project key of the [commun
 ### TODO
 
 - Add all community supported LibreMesh (LROS) devices
+    - librerouter-v1
+    - tp-link-tl-wdr3500-v1
+    - tp-link-archer-c5-v1
+    - tp-link-tl-wdr4300-v1
+    - tp-link-cpe510-v11
+    - tp-link-cpe510-v10
+    - tp-link-cpe510-v20
+    - tp-link-cpe210-v20
+    - tp-link-cpe210-v11
+    - wd-my-net-n600
 - Only show connections for observation once clicked
 - Cache all data
 - Add visual cue as to connection to Mapeo server and LibreMesh node
