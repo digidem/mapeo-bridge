@@ -1,5 +1,6 @@
-function addLine(map, id, point1, point2, quality) {
-    let color = quality === 3 ? 'green' : quality === '2' ? 'orange' : 'red'
+function addLine(map, id, point1, point2, signal_avg) {
+    const quality = signal_avg > -65 ? 3 : signal_avg > -82 ? 2 : 1
+    let color = quality === 3 ? 'green' : quality === 2 ? 'orange' : 'red'
     if (!quality) quality = 'grey'
     map.addSource(id, {
         'type': 'geojson',

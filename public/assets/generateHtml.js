@@ -154,11 +154,10 @@ async function generateHtml(mapeoData, cloudNodes, noFly, filter) {
                                 const assocHostname = getAssocHostname.hostname
                                 const lineDestObs = cleanObs.filter(o => o.tags?.hostname === assocHostname)
                                 const lineDest = lineDestObs[0]
-                                const quality = assoc.signal_avg > -72 ? 3 : assoc.signal_avg > -76 ? 2 : 1
                                 if (lineDest) {
                                     const lineOrigin = [mapeoObs.lon, mapeoObs.lat]
                                     const id = `route-${crypto.randomUUID()}`
-                                    addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], quality)
+                                    addLine(map, id, lineOrigin, [lineDest.lon, lineDest.lat], assoc.signal_avg)
                                     currentLines.push(id)
                                 }
                                 assocs[index].hostname = assocHostname
