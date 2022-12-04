@@ -61,7 +61,7 @@ function slugify(text) {
 
 /** un-link observation from hostname */
 function unlinkObservation(observationId, observationVersion) {
-    axios.put('http://localhost:3000/mapeo', {
+    axios.put('/mapeo', {
         observationId,
         observationVersion,
         nodeHostname: null,
@@ -79,7 +79,7 @@ function updateObservation(node, observationId, observationVersion) {
         .then(() => {
             getBoardData(node)
                 .then(data => {
-                    axios.put('http://localhost:3000/mapeo', {
+                    axios.put('/mapeo', {
                         observationId,
                         observationVersion,
                         nodeHostname: node,
@@ -99,7 +99,7 @@ function updateObservation(node, observationId, observationVersion) {
 async function deleteObservation(observationId) {
     let deleteButton = document.getElementById(`delete-button-${observationId}`)
     deleteButton.classList.add = 'hidden'
-    const update = await axios.delete('http://localhost:3000/mapeo', { data: { observationId } })
+    const update = await axios.delete('/mapeo', { data: { observationId } })
     await observationsToMarkers({ noFly: true, filter: true })
     deleteButton.classList.remove = 'hidden'
 }
@@ -120,7 +120,7 @@ async function observationsToMarkers({ noFly, filter }) {
         const parsedObs = JSON.parse(localObs)
         const parsedNodes = JSON.parse(localNodes)
         if (parsedObs && parsedNodes) await generateHtml(parsedObs, parsedNodes)
-        const getMapeoData = await axios.get('http://localhost:3000/mapeo')
+        const getMapeoData = await axios.get('/mapeo')
         const mapeoData = getMapeoData.data
         const cloudNodesData = await getCloudNodes()
         const cloudNodes = cloudNodesData.nodes

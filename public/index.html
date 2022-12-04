@@ -226,7 +226,7 @@
     saveButton.onclick = async (e) => {
       try {
         saveButton.disabled = true
-        const data = await axios.post('http://localhost:3000/mapeo', editMarker._lngLat)
+        const data = await axios.post('/mapeo', editMarker._lngLat)
         cancelMaker()
         saveButton.disabled = false
         await observationsToMarkers({ map, noFly: true, filter: true })
