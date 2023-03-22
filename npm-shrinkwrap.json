@@ -1,12 +1,12 @@
 {
   "name": "mapeo-bridge",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "mapeo-bridge",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "license": "ISC",
       "dependencies": {
         "@fastify/cors": "^8.1.1",

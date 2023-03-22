@@ -1,210 +1,123 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Mapeo Bridge</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/assets/js/generateHtml.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/css/tailwind.css"></script>
+    <link href="/assets/css/mapbox-gl.css" rel="stylesheet" />
+    <script src="/assets/libs/mapbox-gl.js"></script>
+    <script src="/assets/libs/axios.min.js"></script>
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="/assets/css/jquery.fancybox.min.css"
+    />
+    <!-- Load the `mapbox-gl-geocoder` plugin. -->
+    <script src="/assets/libs/mapbox-gl-geocoder.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="/assets/css/mapbox-gl-geocoder.css"
+      type="text/css"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
 
-<head>
-  <meta charset="utf-8">
-  <title>Mapeo Bridge</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="/assets/js/uhttpd.service.js"></script>
-  <script src="/assets/js/addLine.js"></script>
-  <script src="/assets/js/generateHtml.js"></script>
-  <script src="/assets/js/utils.js"></script>
-  <script src="/assets/css/tailwind.css"></script>
-  <link href="/assets/css/mapbox-gl.css" rel="stylesheet">
-  <script src="/assets/js/mapbox-gl.js"></script>
-  <script src="/assets/js/axios.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="/assets/css/jquery.fancybox.min.css">
-  <!-- Load the `mapbox-gl-geocoder` plugin. -->
-  <script src="/assets/js/mapbox-gl-geocoder.min.js"></script>
-  <link rel="stylesheet" href="/assets/css/mapbox-gl-geocoder.css" type="text/css">
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
 
-    #map {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      width: 100%;
-    }
+      .mapboxgl-popup {
+        min-width: 300px;
+      }
 
-    .mapboxgl-popup {
-      min-width: 300px;
-    }
+      .mapboxgl-popup-content img {
+        width: 100%;
+      }
 
-    .mapboxgl-popup-content img {
-      width: 100%;
-    }
+      .mapboxgl-popup-close-button {
+        top: 5px;
+        right: 5px;
+        font-size: 40px;
+      }
 
-    .mapboxgl-popup-close-button {
-      top: 5px;
-      right: 5px;
-      font-size: 40px;
-    }
+      .mapboxgl-ctrl-top-right {
+        top: 60px;
+        max-width: 90vw;
+      }
 
-    .mapboxgl-ctrl-top-right {
-      top: 60px;
-      max-width: 90vw;
-    }
+      #nav {
+        position: absolute;
+        top: 0;
+        z-index: 99;
+        width: 100%;
+      }
+    </style>
+  </head>
 
-
-    #nav {
-      position: absolute;
-      top: 0;
-      z-index: 99;
-      width: 100%;
-    }
-  </style>
-</head>
-
-<body>
-  <nav id="nav" class="bg-gray-800">
-    <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
-      <div class="relative flex h-16 items-center justify-between">
-        <div class="relative items-center justify-between hidden md:flex">
-          <h3 class="text-gray-100">Mapeo</h3>
-          <a target="_blank" href="https://mapeo.app"><img style="height: 35px" src="/assets/imgs/mapeo.png" /></a>
-        </div>
-        <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-          <button id="save" type="button"
-            class="px-4 hidden rounded-full bg-gray-800 p-1 text-green-500 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span class="sr-only">Add marker</span>
-            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
-              <path d="M1 7l4.5 4.5L14 3" stroke="currentColor" stroke-linecap="square"></path>
-            </svg>
-          </button>
-          <button id="cancel" type="button"
-            class="px-4 hidden rounded-full bg-gray-800 p-1 text-red-600 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span class="sr-only">Add marker</span>
-            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
-              <path d="M1.5 1.5l12 12m-12 0l12-12" stroke="currentColor"></path>
-            </svg>
-          </button>
-          <button id="add" ¨ type="button"
-            class="px-4 rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-            <span class="sr-only">Add marker</span>
-            <svg viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" width="15" height="15">
-              <path d="M7.5 1v13M1 7.5h13" stroke="currentColor"></path>
-            </svg> </button>
-          
+  <body>
+    <nav id="nav" class="bg-gray-800">
+      <div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+        <div class="relative flex h-16 items-center justify-between">
+          <div class="relative items-center justify-between hidden md:flex">
+            <h3 class="text-gray-100">Mapeo</h3>
+            <a target="_blank" href="https://mapeo.app"
+              ><img style="height: 35px" src="/assets/imgs/mapeo.png"
+            /></a>
           </div>
-          </button>
         </div>
       </div>
-    </div>
-    </div>
-    </div>
-  </nav>
-
-  <div id="map"></div>
-  </div>
-
-
-  <script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw';
-    const storage = window.localStorage;
-    let addLoading
-    const storedCenter = storage.getItem('map_center')
-    const center = storedCenter && JSON.parse(storedCenter)
-    const map = new mapboxgl.Map({
-      container: 'map',
-      zoom: 5,
-      center: center || [0, 0],
-      style: 'mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f'
-    });
-    map.addControl(
-      new MapboxGeocoder({
-        accessToken: mapboxgl.accessToken,
-        mapboxgl: mapboxgl
-      })
-    );
-    map.addControl(
-      new mapboxgl.GeolocateControl({
-        positionOptions: {
-          enableHighAccuracy: true
-        },
-        // When active the map will receive updates to the device's location as it changes.
-        trackUserLocation: true,
-        // Draw an arrow next to the location dot to indicate which direction the device is heading.
-        showUserHeading: true
-      })
-    );
-    window.mapboxMap = map
-    // Map
-    map.on('load', async () => {
-      // Network
-      try {
-        await observationsToMarkers({ map, filter: true })
-      } catch (err) {
-        console.log('Error', err)
-      }
-
-    })
-    // Filter
-    let filterState = false
-    const filterButton = document.getElementById('filter-button')
-    const routerIcon = document.getElementById('icon-router')
-    const mapIcon = document.getElementById('icon-map')
-
-    filterButton.onclick = async (e) => {
-      filterState = !filterState
-      if (!filterState) {
-        routerIcon.classList.remove('hidden')
-        mapIcon.classList.add('hidden')
-      } else {
-        routerIcon.classList.add('hidden')
-        mapIcon.classList.remove('hidden')
-      }
-      await observationsToMarkers({
-        map,
-        noFly: true,
-        filter: filterState
-      })
-    }
-
-    // Add new router
-    const addButton = document.getElementById('add')
-    const saveButton = document.getElementById('save')
-    const cancelButton = document.getElementById('cancel')
-    let editMarker
-    function cancelMaker() {
-      if (editMarker) {
-        editMarker.remove()
-        editMarker = undefined
-      }
-      saveButton.classList.add('hidden');
-      cancelButton.classList.add('hidden');
-    }
-    addButton.onclick = (e) => {
-      if (editMarker) editMarker.remove()
-      else {
-        saveButton.classList.remove('hidden');
-        cancelButton.classList.remove('hidden');
-      }
-      editMarker = new mapboxgl.Marker({ draggable: true }).setLngLat(map.getCenter())
-        .addTo(map);
-lib
-    }
-    cancelButton.onclick = (e) => {
-      cancelMaker()
-    }
-    saveButton.onclick = async (e) => {
-      try {
-        saveButton.disabled = true
-        const data = await axios.post('/mapeo', editMarker._lngLat)
-        cancelMaker()
-        saveButton.disabled = false
-        await observationsToMarkers({ map, noFly: true, filter: true })
-      } catch (err) {
-        console.log('Error on saving', err)
-      }
-    }
-  </script>
-  Loading...
-  <!-- <script src="/assets/js/jquery-3.2.1.min.js"></script>
-  <script src="/assets/js/jquery.fancybox.min.js"></script> -->
-</body>
-
+    </nav>
+    <div id="map"></div>
+    <script>
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw";
+      const storage = window.localStorage;
+      let addLoading;
+      const storedCenter = storage.getItem("map_center");
+      const center = storedCenter && JSON.parse(storedCenter);
+      const map = new mapboxgl.Map({
+        container: "map",
+        zoom: 5,
+        center: center || [0, 0],
+        style: "mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f",
+      });
+      map.addControl(
+        new MapboxGeocoder({
+          accessToken: mapboxgl.accessToken,
+          mapboxgl: mapboxgl,
+        })
+      );
+      map.addControl(
+        new mapboxgl.GeolocateControl({
+          positionOptions: {
+            enableHighAccuracy: true,
+          },
+          // When active the map will receive updates to the device's location as it changes.
+          trackUserLocation: true,
+          // Draw an arrow next to the location dot to indicate which direction the device is heading.
+          showUserHeading: true,
+        })
+      );
+      window.mapboxMap = map;
+      // Map
+      map.on("load", async () => {
+        // Network
+        try {
+          await observationsToMarkers({ map, filter: true });
+        } catch (err) {
+          console.log("Error", err);
+        }
+      });
+    </script>
+    Loading...
+  </body>
 </html>
