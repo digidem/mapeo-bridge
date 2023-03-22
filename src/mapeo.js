@@ -11,6 +11,7 @@ const homedir = require('os').homedir()
 
 const discoveryKey = require('./discoveryKey')
 const terrastoriesCsv = require('./terrastoriesCsv')
+const api = require('./api')
 // TODO: remote duplication of DEFAULT_STORAGE declaration
 const DEFAULT_STORAGE =
   process.env.MAPEO_STORAGE_PATH || path.join(homedir, '.mapeo-bridge')
@@ -20,8 +21,8 @@ const AUTO_SYNC = process.env.AUTO_SYNC
 // If a mapeo instance hasn't been accessed for a minute, we should clear it out
 const DEFAULT_GC_DELAY = 60 * 1000
 const HOSTNAME = require('os').hostname()
-const DEFAULT_NAME = 'Mapeo Bridge ' + HOSTNAME
-const DEVICE_TYPE = 'cloud'
+const DEFAULT_NAME = HOSTNAME || 'Mapeo Bridge'
+const DEVICE_TYPE = 'desktop' // 'cloud' in the future
 
 module.exports = class MultiMapeo extends EventEmitter {
   constructor ({
@@ -60,7 +61,7 @@ module.exports = class MultiMapeo extends EventEmitter {
     console.log('MAPEO_STORAGE_PATH:', DEFAULT_STORAGE)
     console.log('MAPEO_PROJECT_KEY:', projectKey)
     console.log('Discovery Key:', key)
-    console.log("MAPEO_TERRASTORIES_TYPE:", this.filteredType)
+    console.log('MAPEO_TERRASTORIES_TYPE:', this.filteredType)
 
     const { storageLocation, id } = this
     const dir = path.join(storageLocation, 'instances', key)
@@ -86,6 +87,7 @@ module.exports = class MultiMapeo extends EventEmitter {
     mapeo.sync.listen(() => {
       mapeo.sync.join(Buffer.from(projectKey, 'hex'))
     })
+    api(mapeo)
 
     if (AUTO_SYNC) {
       mapeo.sync.on('peer', (peer) => {
