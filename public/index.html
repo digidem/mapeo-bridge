@@ -4,19 +4,16 @@
     <meta charset="utf-8" />
     <title>Mapeo Bridge</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="/assets/js/generateHtml.js"></script>
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/css/tailwind.css"></script>
-    <link href="/assets/css/mapbox-gl.css" rel="stylesheet" />
     <script src="/assets/libs/mapbox-gl.js"></script>
     <script src="/assets/libs/axios.min.js"></script>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="/assets/css/jquery.fancybox.min.css"
-    />
-    <!-- Load the `mapbox-gl-geocoder` plugin. -->
     <script src="/assets/libs/mapbox-gl-geocoder.min.js"></script>
+    <script src="/assets/js/utils.js"></script>
+    <script src="/assets/js/init.js"></script>
+    <script src="/assets/js/generateHtml.js"></script>
+    <link href="/assets/css/mapbox-gl.css" rel="stylesheet" />
+    <script src="/assets/css/tailwind.css"></script>
+
+    <!-- Load the `mapbox-gl-geocoder` plugin. -->
     <link
       rel="stylesheet"
       href="/assets/css/mapbox-gl-geocoder.css"
@@ -78,17 +75,39 @@
     </nav>
     <div id="map"></div>
     <script>
-      mapboxgl.accessToken =
-        "pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw";
       const storage = window.localStorage;
       let addLoading;
+      mapboxgl.accessToken =
+        "pk.eyJ1IjoiZGQtbWFwZW8iLCJhIjoiY2tuaGtxN2hjMjg5YTJ1b29kb3k4a3hwMCJ9.Q4cR8vp-Z6pP9PTUswy7Vw";
       const storedCenter = storage.getItem("map_center");
+      const storedTileserver = storage.getItem("tile_server");
       const center = storedCenter && JSON.parse(storedCenter);
+      const tileServer = storedTileserver && JSON.parse(storedTileserver);
+      let style = "mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f";
+      // TODO: dynamically fetch style
+      // if (!tileServer) {
+      //   console.log("Getting tile server...");
+      //   axios
+      //     .get("/tiles")
+      //     .then(function (response) {
+      //       // handle success
+      //       style = response.data;
+      //       // save to local-storage
+      //       storage.setItem("tile_server", JSON.stringify(style));
+      //     })
+      //     .catch(function (error) {
+      //       // handle error
+      //       console.log(error);
+      //     });
+      // } else {
+      //   style = tileServer;
+      //   console.log("Already have address", tileServer);
+      // }
       const map = new mapboxgl.Map({
         container: "map",
         zoom: 5,
         center: center || [0, 0],
-        style: "mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f",
+        style,
       });
       map.addControl(
         new MapboxGeocoder({
