@@ -19,19 +19,19 @@ module.exports = (mapeo, DEFAULT_STORAGE, instanceDir, filteredType) => {
       .map((i) => ({
         name: i.tags?.name || i.tags?.categoryId,
         type_of_place: i.tags?.type || i.tags?.categoryId,
-        description: i.description || i.tags?.type,
-        region: i.tags?.region || 'unknown',
-        long: i.lon,
         lat: i.lat,
-        media: i.attachments[0]?.id
+        long: i.lon,
+        region: i.tags?.region || 'unknown',
+        description: i.description || i.tags?.type,
+        photo: i.attachments[0]?.id
       }))
     terrastoriesPlaceData.forEach((i) => {
       const size = 'preview'
-      if (i.media) {
-        const src = `${instanceDir}/media/${size}/${i.media.slice(0, 2)}/${
-          i.media
+      if (i.photo) {
+        const src = `${instanceDir}/media/${size}/${i.photo.slice(0, 2)}/${
+          i.photo
         }`
-        const dest = `${csvPath}/${i.media}`
+        const dest = `${csvPath}/${i.photo}`
         fs.copyFile(src, dest, (err) => {
           if (err) throw err
           console.log(`Copied ${src} to ${dest}`)
@@ -39,11 +39,9 @@ module.exports = (mapeo, DEFAULT_STORAGE, instanceDir, filteredType) => {
       }
     })
 
-    // console.log("terrastoriesPlaceData", terrastoriesPlaceData);
     const writer = fs.createWriteStream(
       path.join(csvPath, `${filteredType}.csv`)
     )
-    // TODO: create media folder and copy over media from place
     jsonexport(terrastoriesPlaceData, { rowDelimiter: ',' }, (err, csv) => {
       if (err) return console.error(err)
       writer.write(csv)
