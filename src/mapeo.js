@@ -89,6 +89,17 @@ module.exports = class MultiMapeo extends EventEmitter {
     })
     api(mapeo)
 
+    mapeo.sync.on('peer', (peer) => {
+      peer.sync.once('sync-start', () => {
+        peer.sync.on('error', () => console.log('Got error'))
+        peer.sync.on('progress', () => console.log('Syncing with', peer.id))
+        peer.sync.on('end', () => {
+          terrastoriesCsv(mapeo, DEFAULT_STORAGE, dir, this.filteredType)
+          console.log('Done syncing')
+        })
+      })
+    })
+
     if (AUTO_SYNC) {
       mapeo.sync.on('peer', (peer) => {
         const { id, host, port, type } = peer
@@ -98,7 +109,7 @@ module.exports = class MultiMapeo extends EventEmitter {
         )
         // TODO: Should we track / report sync progress somewhere?
         mapeo.sync.replicate(peer, { deviceType: DEVICE_TYPE })
-        terrastoriesCsv(mapeo, DEFAULT_STORAGE, this.filteredType)
+        terrastoriesCsv(mapeo, DEFAULT_STORAGE, dir, this.filteredType)
       })
     }
 
