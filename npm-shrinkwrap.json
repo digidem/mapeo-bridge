@@ -13,7 +13,7 @@
         "@fastify/static": "^6.9.0",
         "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
         "fastify": "^4.15.0",
-        "hypercore-crypto": "^3.3.1",
+        "hypercore-crypto": "^2.3.2",
         "jsonexport": "^3.2.0",
         "level": "^8.0.0",
         "mkdirp": "^2.1.6",
@@ -1571,14 +1571,6 @@
       "version": "2.20.3",
       "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
       "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
-    },
-    "node_modules/compact-encoding": {
-      "version": "2.11.0",
-      "resolved": "https://registry.npmjs.org/compact-encoding/-/compact-encoding-2.11.0.tgz",
-      "integrity": "sha512-CRfTuyy9Tg7EwxNKvIq3yFIr2JnJLyVr9Yj234VsDCL59hdXcZH3TdzY/2kwbAqVogIoRBJjnNKCEnXbxTIEeg==",
-      "dependencies": {
-        "b4a": "^1.3.0"
-      }
     },
     "node_modules/comparable-storable-types": {
       "version": "1.0.0",
@@ -3256,8 +3248,7 @@
     "node_modules/function-bind": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz",
-      "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==",
-      "dev": true
+      "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
     },
     "node_modules/function.prototype.name": {
       "version": "1.1.5",
@@ -3594,7 +3585,6 @@
       "version": "1.0.3",
       "resolved": "https://registry.npmjs.org/has/-/has-1.0.3.tgz",
       "integrity": "sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==",
-      "dev": true,
       "dependencies": {
         "function-bind": "^1.1.1"
       },
@@ -3778,13 +3768,12 @@
       }
     },
     "node_modules/hypercore-crypto": {
-      "version": "3.3.1",
-      "resolved": "https://registry.npmjs.org/hypercore-crypto/-/hypercore-crypto-3.3.1.tgz",
-      "integrity": "sha512-Fo0ZBMDW3P7HFh58AQdxsVop0Xh0Bper4Pyl5Dpc+tvGos6je2ufJpeepaHaI0mNkKq4we1ikd47kTnx2XJd/w==",
+      "version": "2.3.2",
+      "resolved": "https://registry.npmjs.org/hypercore-crypto/-/hypercore-crypto-2.3.2.tgz",
+      "integrity": "sha512-GzHgVOfr5utdiJG5QNcQZ0oo+/YQNbekpg429x00YpUobBraX2qEL3E+iH/EFEIdCQSiGHfToWyYw+OpznSjww==",
       "dependencies": {
-        "b4a": "^1.1.0",
-        "compact-encoding": "^2.5.1",
-        "sodium-universal": "^4.0.0"
+        "sodium-universal": "^3.0.0",
+        "uint64be": "^3.0.0"
       }
     },
     "node_modules/hypercore-crypto/node_modules/nanoassert": {
@@ -3807,29 +3796,35 @@
       }
     },
     "node_modules/hypercore-crypto/node_modules/sodium-native": {
-      "version": "4.0.1",
-      "resolved": "https://registry.npmjs.org/sodium-native/-/sodium-native-4.0.1.tgz",
-      "integrity": "sha512-OQTaxrVLtMvrnfcwZVsOTHe58MfDApJiHJNoOwcmmrhwvlYkfaUt2WuzRio8PgEMOd96R5aDHY49DCtock1zsA==",
+      "version": "3.4.1",
+      "resolved": "https://registry.npmjs.org/sodium-native/-/sodium-native-3.4.1.tgz",
+      "integrity": "sha512-PaNN/roiFWzVVTL6OqjzYct38NSXewdl2wz8SRB51Br/MLIJPrbM3XexhVWkq7D3UWMysfrhKVf1v1phZq6MeQ==",
       "hasInstallScript": true,
       "dependencies": {
         "node-gyp-build": "^4.3.0"
       }
     },
     "node_modules/hypercore-crypto/node_modules/sodium-universal": {
-      "version": "4.0.0",
-      "resolved": "https://registry.npmjs.org/sodium-universal/-/sodium-universal-4.0.0.tgz",
-      "integrity": "sha512-iKHl8XnBV96k1c75gwwzANFdephw/MDWSjQAjPmBE+du0y3P23Q8uf7AcdcfFsYAMwLg7WVBfSAIBtV/JvRsjA==",
+      "version": "3.1.0",
+      "resolved": "https://registry.npmjs.org/sodium-universal/-/sodium-universal-3.1.0.tgz",
+      "integrity": "sha512-N2gxk68Kg2qZLSJ4h0NffEhp4BjgWHCHXVlDi1aG1hA3y+ZeWEmHqnpml8Hy47QzfL1xLy5nwr9LcsWAg2Ep0A==",
       "dependencies": {
         "blake2b": "^2.1.1",
         "chacha20-universal": "^1.0.4",
         "nanoassert": "^2.0.0",
+        "resolve": "^1.17.0",
         "sha256-universal": "^1.1.0",
         "sha512-universal": "^1.1.0",
         "siphash24": "^1.0.1",
         "sodium-javascript": "~0.8.0",
-        "sodium-native": "^4.0.0",
+        "sodium-native": "^3.2.0",
         "xsalsa20": "^1.0.0"
       }
+    },
+    "node_modules/hypercore-crypto/node_modules/uint64be": {
+      "version": "3.0.0",
+      "resolved": "https://registry.npmjs.org/uint64be/-/uint64be-3.0.0.tgz",
+      "integrity": "sha512-mliiCSrsE29aNBI7O9W5gGv6WmA9kBR8PtTt6Apaxns076IRdYrrtFhXHEWMj5CSum3U7cv7/pi4xmi4XsIOqg=="
     },
     "node_modules/hypercore-protocol": {
       "version": "6.12.0",
@@ -4241,7 +4236,6 @@
       "version": "2.11.0",
       "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.11.0.tgz",
       "integrity": "sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==",
-      "dev": true,
       "dependencies": {
         "has": "^1.0.3"
       },
@@ -6266,8 +6260,7 @@
     "node_modules/path-parse": {
       "version": "1.0.7",
       "resolved": "https://registry.npmjs.org/path-parse/-/path-parse-1.0.7.tgz",
-      "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==",
-      "dev": true
+      "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw=="
     },
     "node_modules/path-source": {
       "version": "0.1.3",
@@ -6767,7 +6760,6 @@
       "version": "1.22.1",
       "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.1.tgz",
       "integrity": "sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==",
-      "dev": true,
       "dependencies": {
         "is-core-module": "^2.9.0",
         "path-parse": "^1.0.7",
@@ -7674,7 +7666,6 @@
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz",
       "integrity": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==",
-      "dev": true,
       "engines": {
         "node": ">= 0.4"
       },
@@ -9699,14 +9690,6 @@
       "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
       "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
     },
-    "compact-encoding": {
-      "version": "2.11.0",
-      "resolved": "https://registry.npmjs.org/compact-encoding/-/compact-encoding-2.11.0.tgz",
-      "integrity": "sha512-CRfTuyy9Tg7EwxNKvIq3yFIr2JnJLyVr9Yj234VsDCL59hdXcZH3TdzY/2kwbAqVogIoRBJjnNKCEnXbxTIEeg==",
-      "requires": {
-        "b4a": "^1.3.0"
-      }
-    },
     "comparable-storable-types": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/comparable-storable-types/-/comparable-storable-types-1.0.0.tgz",
@@ -11058,8 +11041,7 @@
     "function-bind": {
       "version": "1.1.1",
       "resolved": "https://registry.npmjs.org/function-bind/-/function-bind-1.1.1.tgz",
-      "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A==",
-      "dev": true
+      "integrity": "sha512-yIovAzMX49sF8Yl58fSCWJ5svSLuaibPxXQJFLmBObTuCr0Mf1KiPopGM9NiFjiYBCbfaa2Fh6breQ6ANVTI0A=="
     },
     "function.prototype.name": {
       "version": "1.1.5",
@@ -11326,7 +11308,6 @@
       "version": "1.0.3",
       "resolved": "https://registry.npmjs.org/has/-/has-1.0.3.tgz",
       "integrity": "sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==",
-      "dev": true,
       "requires": {
         "function-bind": "^1.1.1"
       }
@@ -11477,13 +11458,12 @@
       }
     },
     "hypercore-crypto": {
-      "version": "3.3.1",
-      "resolved": "https://registry.npmjs.org/hypercore-crypto/-/hypercore-crypto-3.3.1.tgz",
-      "integrity": "sha512-Fo0ZBMDW3P7HFh58AQdxsVop0Xh0Bper4Pyl5Dpc+tvGos6je2ufJpeepaHaI0mNkKq4we1ikd47kTnx2XJd/w==",
+      "version": "2.3.2",
+      "resolved": "https://registry.npmjs.org/hypercore-crypto/-/hypercore-crypto-2.3.2.tgz",
+      "integrity": "sha512-GzHgVOfr5utdiJG5QNcQZ0oo+/YQNbekpg429x00YpUobBraX2qEL3E+iH/EFEIdCQSiGHfToWyYw+OpznSjww==",
       "requires": {
-        "b4a": "^1.1.0",
-        "compact-encoding": "^2.5.1",
-        "sodium-universal": "^4.0.0"
+        "sodium-universal": "^3.0.0",
+        "uint64be": "^3.0.0"
       },
       "dependencies": {
         "nanoassert": {
@@ -11506,28 +11486,34 @@
           }
         },
         "sodium-native": {
-          "version": "4.0.1",
-          "resolved": "https://registry.npmjs.org/sodium-native/-/sodium-native-4.0.1.tgz",
-          "integrity": "sha512-OQTaxrVLtMvrnfcwZVsOTHe58MfDApJiHJNoOwcmmrhwvlYkfaUt2WuzRio8PgEMOd96R5aDHY49DCtock1zsA==",
+          "version": "3.4.1",
+          "resolved": "https://registry.npmjs.org/sodium-native/-/sodium-native-3.4.1.tgz",
+          "integrity": "sha512-PaNN/roiFWzVVTL6OqjzYct38NSXewdl2wz8SRB51Br/MLIJPrbM3XexhVWkq7D3UWMysfrhKVf1v1phZq6MeQ==",
           "requires": {
             "node-gyp-build": "^4.3.0"
           }
         },
         "sodium-universal": {
-          "version": "4.0.0",
-          "resolved": "https://registry.npmjs.org/sodium-universal/-/sodium-universal-4.0.0.tgz",
-          "integrity": "sha512-iKHl8XnBV96k1c75gwwzANFdephw/MDWSjQAjPmBE+du0y3P23Q8uf7AcdcfFsYAMwLg7WVBfSAIBtV/JvRsjA==",
+          "version": "3.1.0",
+          "resolved": "https://registry.npmjs.org/sodium-universal/-/sodium-universal-3.1.0.tgz",
+          "integrity": "sha512-N2gxk68Kg2qZLSJ4h0NffEhp4BjgWHCHXVlDi1aG1hA3y+ZeWEmHqnpml8Hy47QzfL1xLy5nwr9LcsWAg2Ep0A==",
           "requires": {
             "blake2b": "^2.1.1",
             "chacha20-universal": "^1.0.4",
             "nanoassert": "^2.0.0",
+            "resolve": "^1.17.0",
             "sha256-universal": "^1.1.0",
             "sha512-universal": "^1.1.0",
             "siphash24": "^1.0.1",
             "sodium-javascript": "~0.8.0",
-            "sodium-native": "^4.0.0",
+            "sodium-native": "^3.2.0",
             "xsalsa20": "^1.0.0"
           }
+        },
+        "uint64be": {
+          "version": "3.0.0",
+          "resolved": "https://registry.npmjs.org/uint64be/-/uint64be-3.0.0.tgz",
+          "integrity": "sha512-mliiCSrsE29aNBI7O9W5gGv6WmA9kBR8PtTt6Apaxns076IRdYrrtFhXHEWMj5CSum3U7cv7/pi4xmi4XsIOqg=="
         }
       }
     },
@@ -11870,7 +11856,6 @@
       "version": "2.11.0",
       "resolved": "https://registry.npmjs.org/is-core-module/-/is-core-module-2.11.0.tgz",
       "integrity": "sha512-RRjxlvLDkD1YJwDbroBHMb+cukurkDWNyHx7D3oNB5x9rb5ogcksMC5wHCadcXoo67gVr/+3GFySh3134zi6rw==",
-      "dev": true,
       "requires": {
         "has": "^1.0.3"
       }
@@ -13549,8 +13534,7 @@
     "path-parse": {
       "version": "1.0.7",
       "resolved": "https://registry.npmjs.org/path-parse/-/path-parse-1.0.7.tgz",
-      "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==",
-      "dev": true
+      "integrity": "sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw=="
     },
     "path-source": {
       "version": "0.1.3",
@@ -13965,7 +13949,6 @@
       "version": "1.22.1",
       "resolved": "https://registry.npmjs.org/resolve/-/resolve-1.22.1.tgz",
       "integrity": "sha512-nBpuuYuY5jFsli/JIs1oldw6fOQCBioohqWZg/2hiaOybXOft4lonv85uDOKXdf8rhyK159cxU5cDcK/NKk8zw==",
-      "dev": true,
       "requires": {
         "is-core-module": "^2.9.0",
         "path-parse": "^1.0.7",
@@ -14652,8 +14635,7 @@
     "supports-preserve-symlinks-flag": {
       "version": "1.0.0",
       "resolved": "https://registry.npmjs.org/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz",
-      "integrity": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==",
-      "dev": true
+      "integrity": "sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w=="
     },
     "tape": {
       "version": "5.6.3",
