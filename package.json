@@ -12,7 +12,7 @@
     "@fastify/static": "^6.9.0",
     "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
     "fastify": "^4.15.0",
-    "hypercore-crypto": "^2.3.2",
+    "hypercore-crypto": "^1.0.0",
     "jsonexport": "^3.2.0",
     "level": "^8.0.0",
     "mkdirp": "^2.1.6",
