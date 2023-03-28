@@ -8,22 +8,22 @@
   },
   "license": "ISC",
   "dependencies": {
-    "@fastify/cors": "^8.1.1",
-    "@fastify/static": "^6.5.0",
+    "@fastify/cors": "^8.2.1",
+    "@fastify/static": "^6.9.0",
     "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
-    "fastify": "^4.9.2",
-    "hypercore-crypto": "^1.0.0",
+    "fastify": "^4.15.0",
+    "hypercore-crypto": "^3.3.1",
     "jsonexport": "^3.2.0",
-    "level": "^6.0.1",
-    "mkdirp": "^1.0.4",
+    "level": "^8.0.0",
+    "mkdirp": "^2.1.6",
     "osm-p2p": "^5.1.0",
-    "pino": "^6.8.0",
+    "pino": "^8.11.0",
     "safe-fs-blob-store": "^1.0.6"
   },
   "devDependencies": {
-    "get-port": "^5.1.1",
-    "standard": "^16.0.2",
-    "tape": "^5.0.1",
+    "get-port": "^6.1.2",
+    "standard": "^17.0.0",
+    "tape": "^5.6.3",
     "tmp": "^0.2.1"
   }
 }
