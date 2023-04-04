@@ -7,9 +7,8 @@
     <script src="/assets/libs/mapbox-gl.js"></script>
     <script src="/assets/libs/axios.min.js"></script>
     <script src="/assets/libs/mapbox-gl-geocoder.min.js"></script>
-    <script src="/assets/js/utils.js"></script>
-    <script src="/assets/js/init.js"></script>
     <script src="/assets/js/generateHtml.js"></script>
+    <script src="/assets/js/utils.js"></script>
     <link href="/assets/css/mapbox-gl.css" rel="stylesheet" />
     <script src="/assets/css/tailwind.css"></script>
 
@@ -83,26 +82,29 @@
       const storedTileserver = storage.getItem("tile_server");
       const center = storedCenter && JSON.parse(storedCenter);
       const tileServer = storedTileserver && JSON.parse(storedTileserver);
-      let style = "mapbox://styles/dd-mapeo/cl143pibo001315nwckxwxn7f";
+      const { hostname, protocol } = window.location;
+      const url = `${protocol}//${hostname}`;
+      let style
       // TODO: dynamically fetch style
-      // if (!tileServer) {
-      //   console.log("Getting tile server...");
-      //   axios
-      //     .get("/tiles")
-      //     .then(function (response) {
-      //       // handle success
-      //       style = response.data;
-      //       // save to local-storage
-      //       storage.setItem("tile_server", JSON.stringify(style));
-      //     })
-      //     .catch(function (error) {
-      //       // handle error
-      //       console.log(error);
-      //     });
-      // } else {
-      //   style = tileServer;
-      //   console.log("Already have address", tileServer);
-      // }
+      if (!tileServer) {
+        console.log("Getting tile server...");
+        axios
+          .get("/style")
+          .then((response) => {
+            // handle success
+            const res = response.data;
+            style = res || `${url}:8085/styles/terrastories-map/style.json`
+            // save to local-storage
+            storage.setItem("tile_server", JSON.stringify(style));
+          })
+          .catch((error) => {
+            // handle error
+            console.log(error);
+          });
+      } else {
+        style = tileServer;
+        console.log("Already have address", tileServer);
+      }
       const map = new mapboxgl.Map({
         container: "map",
         zoom: 5,

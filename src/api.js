@@ -31,6 +31,9 @@ module.exports = (mapeo, filteredType) => {
       ]
     }
   })
+  fastify.get('/style', (_, reply) => {
+    reply.send(process.env.OFFLINE_MAP_STYLE || null)
+  })
   fastify.get('/mapeo', (req, reply) => {
     mapeo.observationList(null, (err, data) => {
       if (err) return console.error(err)
