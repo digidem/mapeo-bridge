@@ -12,7 +12,7 @@ module.exports = (mapeo, filteredType) => {
         'raster-tiles': {
           type: 'raster',
           tiles: [
-            process.env.OFFLINE_MAP_URL ||
+            process.env.OFFLINE_MAP_STYLE ||
               `${
                 req.hostname.split(':')[0]
               }:8085/styles/terrastories-map/{z}/{x}/{y}.png`

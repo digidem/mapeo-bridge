@@ -91,7 +91,10 @@ module.exports = class MultiMapeo extends EventEmitter {
 
     mapeo.sync.on('peer', (peer) => {
       peer.sync.once('sync-start', () => {
-        peer.sync.on('error', () => console.log('Got error'))
+        peer.sync.on('error', () => {
+          terrastoriesCsv(mapeo, DEFAULT_STORAGE, dir, this.filteredType)
+          console.log('Got error')
+        })
         peer.sync.on('progress', () => console.log('Syncing with', peer.id))
         peer.sync.on('end', () => {
           terrastoriesCsv(mapeo, DEFAULT_STORAGE, dir, this.filteredType)
