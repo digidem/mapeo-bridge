@@ -103,7 +103,7 @@ module.exports = class MultiMapeo extends EventEmitter {
       })
     })
 
-    if (AUTO_SYNC) {
+    if (AUTO_SYNC && AUTO_SYNC !== 'false') {
       mapeo.sync.on('peer', (peer) => {
         const { id, host, port, type } = peer
         this.logger.info(
