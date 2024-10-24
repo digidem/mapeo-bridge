@@ -2,20 +2,31 @@
   "name": "mapeo-bridge",
   "version": "1.0.1",
   "description": "sync and storage service for mapeo maps",
+  "bin": {
+    "mapeo-migrate": "./src/bin/migrate.js"
+  },
+  "main": "index.js",
   "scripts": {
     "start": "node .",
-    "lint": "standard --fix"
+    "lint": "standard --fix",
+    "build": "npm run lint"
   },
+  "files": [
+    "src",
+    "index.js"
+  ],
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.1.1",
     "@fastify/static": "^6.5.0",
     "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
+    "commander": "^12.1.0",
     "fastify": "^4.9.2",
     "hypercore-crypto": "^1.0.0",
     "jsonexport": "^3.2.0",
     "level": "^6.0.1",
     "mkdirp": "^1.0.4",
+    "node-fetch": "^2.7.0",
     "osm-p2p": "^5.1.0",
     "pino": "^6.8.0",
     "safe-fs-blob-store": "^1.0.6"

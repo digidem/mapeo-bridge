@@ -18,7 +18,7 @@ function degr2rad(degr) { return degr * Math.PI / 180; }
  *   pairs in degrees. e.g. [[latitude1, longtitude1], [latitude2
  *   [longtitude2] ...]
  *
- * @return array with the center latitude longtitude pairs in 
+ * @return array with the center latitude longtitude pairs in
  *   degrees.
  */
 function getLatLngCenter(latLngInDegr) {

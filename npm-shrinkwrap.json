@@ -12,14 +12,19 @@
         "@fastify/cors": "^8.1.1",
         "@fastify/static": "^6.5.0",
         "@mapeo/core": "git+https://github.com/digidem/mapeo-core.git#ws-sync",
+        "commander": "^12.1.0",
         "fastify": "^4.9.2",
         "hypercore-crypto": "^1.0.0",
         "jsonexport": "^3.2.0",
         "level": "^6.0.1",
         "mkdirp": "^1.0.4",
+        "node-fetch": "^2.7.0",
         "osm-p2p": "^5.1.0",
         "pino": "^6.8.0",
         "safe-fs-blob-store": "^1.0.6"
+      },
+      "bin": {
+        "mapeo-migrate": "src/bin/migrate.js"
       },
       "devDependencies": {
         "get-port": "^5.1.1",
@@ -1409,9 +1414,13 @@
       "dev": true
     },
     "node_modules/commander": {
-      "version": "2.20.3",
-      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
-      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+      "version": "12.1.0",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-12.1.0.tgz",
+      "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==",
+      "license": "MIT",
+      "engines": {
+        "node": ">=18"
+      }
     },
     "node_modules/comparable-storable-types": {
       "version": "1.0.0",
@@ -5065,6 +5074,26 @@
         "network-address": "cli.js"
       }
     },
+    "node_modules/node-fetch": {
+      "version": "2.7.0",
+      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz",
+      "integrity": "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==",
+      "license": "MIT",
+      "dependencies": {
+        "whatwg-url": "^5.0.0"
+      },
+      "engines": {
+        "node": "4.x || >=6.0.0"
+      },
+      "peerDependencies": {
+        "encoding": "^0.1.0"
+      },
+      "peerDependenciesMeta": {
+        "encoding": {
+          "optional": true
+        }
+      }
+    },
     "node_modules/node-gyp-build": {
       "version": "4.2.3",
       "resolved": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.2.3.tgz",
@@ -6640,6 +6669,12 @@
         "shp2json": "bin/shp2json"
       }
     },
+    "node_modules/shapefile/node_modules/commander": {
+      "version": "2.20.3",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==",
+      "license": "MIT"
+    },
     "node_modules/shebang-command": {
       "version": "2.0.0",
       "resolved": "https://registry.npmjs.org/shebang-command/-/shebang-command-2.0.0.tgz",
@@ -7632,6 +7667,12 @@
         "topoquantize": "bin/topoquantize"
       }
     },
+    "node_modules/topojson-client/node_modules/commander": {
+      "version": "2.20.3",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==",
+      "license": "MIT"
+    },
     "node_modules/topojson-server": {
       "version": "3.0.1",
       "resolved": "https://registry.npmjs.org/topojson-server/-/topojson-server-3.0.1.tgz",
@@ -7642,6 +7683,18 @@
       "bin": {
         "geo2topo": "bin/geo2topo"
       }
+    },
+    "node_modules/topojson-server/node_modules/commander": {
+      "version": "2.20.3",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==",
+      "license": "MIT"
+    },
+    "node_modules/tr46": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz",
+      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==",
+      "license": "MIT"
     },
     "node_modules/tsconfig-paths": {
       "version": "3.9.0",
@@ -7865,6 +7918,12 @@
       "resolved": "https://registry.npmjs.org/varint/-/varint-4.0.1.tgz",
       "integrity": "sha1-SQgpuULSSEY7KzUJeZXDv3NxmOk="
     },
+    "node_modules/webidl-conversions": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz",
+      "integrity": "sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==",
+      "license": "BSD-2-Clause"
+    },
     "node_modules/websocket-stream": {
       "version": "5.5.2",
       "resolved": "https://registry.npmjs.org/websocket-stream/-/websocket-stream-5.5.2.tgz",
@@ -7940,6 +7999,16 @@
       "version": "0.0.0",
       "resolved": "https://registry.npmjs.org/wgs84/-/wgs84-0.0.0.tgz",
       "integrity": "sha1-NP3FVZF7blfPKigu0ENxDASc3HY="
+    },
+    "node_modules/whatwg-url": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz",
+      "integrity": "sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==",
+      "license": "MIT",
+      "dependencies": {
+        "tr46": "~0.0.3",
+        "webidl-conversions": "^3.0.0"
+      }
     },
     "node_modules/which": {
       "version": "2.0.2",
@@ -9236,9 +9305,9 @@
       "dev": true
     },
     "commander": {
-      "version": "2.20.3",
-      "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
-      "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+      "version": "12.1.0",
+      "resolved": "https://registry.npmjs.org/commander/-/commander-12.1.0.tgz",
+      "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="
     },
     "comparable-storable-types": {
       "version": "1.0.0",
@@ -12297,6 +12366,14 @@
       "resolved": "https://registry.npmjs.org/network-address/-/network-address-1.1.2.tgz",
       "integrity": "sha1-Sqe/1D8D8LgclwKxPWqFjdsybz4="
     },
+    "node-fetch": {
+      "version": "2.7.0",
+      "resolved": "https://registry.npmjs.org/node-fetch/-/node-fetch-2.7.0.tgz",
+      "integrity": "sha512-c4FRfUm/dbcWZ7U+1Wq0AwCyFL+3nt2bEw05wfxSz+DWpWsitgmSgYmy2dQdWyKC1694ELPqMs/YzUSNozLt8A==",
+      "requires": {
+        "whatwg-url": "^5.0.0"
+      }
+    },
     "node-gyp-build": {
       "version": "4.2.3",
       "resolved": "https://registry.npmjs.org/node-gyp-build/-/node-gyp-build-4.2.3.tgz",
@@ -13574,6 +13651,13 @@
         "slice-source": "0.4",
         "stream-source": "0.3",
         "text-encoding": "^0.6.4"
+      },
+      "dependencies": {
+        "commander": {
+          "version": "2.20.3",
+          "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+          "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+        }
       }
     },
     "shebang-command": {
@@ -14394,6 +14478,13 @@
       "integrity": "sha512-605uxS6bcYxGXw9qi62XyrV6Q3xwbndjachmNxu8HWTtVPxZfEJN9fd/SZS1Q54Sn2y0TMyMxFj/cJINqGHrKw==",
       "requires": {
         "commander": "2"
+      },
+      "dependencies": {
+        "commander": {
+          "version": "2.20.3",
+          "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+          "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+        }
       }
     },
     "topojson-server": {
@@ -14402,7 +14493,19 @@
       "integrity": "sha512-/VS9j/ffKr2XAOjlZ9CgyyeLmgJ9dMwq6Y0YEON8O7p/tGGk+dCWnrE03zEdu7i4L7YsFZLEPZPzCvcB7lEEXw==",
       "requires": {
         "commander": "2"
+      },
+      "dependencies": {
+        "commander": {
+          "version": "2.20.3",
+          "resolved": "https://registry.npmjs.org/commander/-/commander-2.20.3.tgz",
+          "integrity": "sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ=="
+        }
       }
+    },
+    "tr46": {
+      "version": "0.0.3",
+      "resolved": "https://registry.npmjs.org/tr46/-/tr46-0.0.3.tgz",
+      "integrity": "sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw=="
     },
     "tsconfig-paths": {
       "version": "3.9.0",
@@ -14598,6 +14701,11 @@
       "resolved": "https://registry.npmjs.org/varint/-/varint-4.0.1.tgz",
       "integrity": "sha1-SQgpuULSSEY7KzUJeZXDv3NxmOk="
     },
+    "webidl-conversions": {
+      "version": "3.0.1",
+      "resolved": "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-3.0.1.tgz",
+      "integrity": "sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ=="
+    },
     "websocket-stream": {
       "version": "5.5.2",
       "resolved": "https://registry.npmjs.org/websocket-stream/-/websocket-stream-5.5.2.tgz",
@@ -14681,6 +14789,15 @@
       "version": "0.0.0",
       "resolved": "https://registry.npmjs.org/wgs84/-/wgs84-0.0.0.tgz",
       "integrity": "sha1-NP3FVZF7blfPKigu0ENxDASc3HY="
+    },
+    "whatwg-url": {
+      "version": "5.0.0",
+      "resolved": "https://registry.npmjs.org/whatwg-url/-/whatwg-url-5.0.0.tgz",
+      "integrity": "sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==",
+      "requires": {
+        "tr46": "~0.0.3",
+        "webidl-conversions": "^3.0.0"
+      }
     },
     "which": {
       "version": "2.0.2",

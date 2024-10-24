@@ -6,11 +6,27 @@ module.exports = (mapeo, filteredType) => {
         reply.sendFile('index.html') // serving path.join(__dirname, 'public', 'myHtml.html') directly
     })
     fastify.get('/mapeo', (req, reply) => {
+        const { category, name } = req.query
         mapeo.observationList(null, (err, data) => {
-            if (err) return console.error(err)
-            reply.send(data)
+            if (err) {
+                console.error(err)
+                return reply.status(500).send({ error: 'Internal Server Error' })
+            }
+            let filteredData = data
+            if (category) {
+                const categories = Array.isArray(category) ? category : [category]
+                filteredData = filteredData.filter(obs => {
+                    return obs.tags && obs.tags.categoryId && categories.includes(obs.tags.categoryId)
+                })
+            }
+            if (name) {
+                const lowercaseName = name.toLowerCase();
+                filteredData = filteredData.filter(obs => {
+                    return obs.tags && obs.tags.name && obs.tags.name.toLowerCase().includes(lowercaseName);
+                });
+            }
+            reply.send(filteredData);
         })
-
     })
     fastify.post('/mapeo', (req, reply) => {
         const { lat, lng } = req.body
@@ -29,26 +45,32 @@ module.exports = (mapeo, filteredType) => {
             reply.send(data)
         })
     })
-    fastify.put('/mapeo', (req, reply) => {
-        const { observationId, observationVersion, nodeHostname, nodeModel } = req.body
-        const obs = {
-            version: observationVersion,
-            id: observationId,
-            type: 'observation',
-            tags: {
-                categoryId: nodeModel,
-                hostname: nodeHostname,
-                type: 'network'
+    fastify.put('/mapeo', async (req, reply) => {
+        try {
+            const { observationId, observationVersion, nodeHostname, nodeModel } = req.body
+            const obs = {
+                version: observationVersion,
+                id: observationId,
+                type: 'observation',
+                tags: {
+                    categoryId: nodeModel,
+                    hostname: nodeHostname,
+                    type: 'network'
+                }
             }
-        }
-        mapeo.observationUpdate(obs, (err, data) => {
-            console.log('data', data)
-            if (err) {
-                console.error(err)
-                reply.err(err)
-            }
+            console.log('Updating observation:', obs)
+            const data = await new Promise((resolve, reject) => {
+                mapeo.observationUpdate(obs, (err, result) => {
+                    if (err) reject(err)
+                    else resolve(result)
+                })
+            })
+            console.log('Update successful:', data)
             reply.send(data)
-        })
+        } catch (error) {
+            console.error('Error updating observation:', error)
+            reply.status(500).send({ error: 'Internal Server Error' })
+        }
     })
     fastify.delete('/mapeo', (req, reply) => {
         console.log('req.body', req.body)
